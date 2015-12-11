@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.dukescript.test.selenium.webdriver;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import net.java.html.BrwsrCtx;
 import net.java.html.boot.fx.FXBrowsers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
