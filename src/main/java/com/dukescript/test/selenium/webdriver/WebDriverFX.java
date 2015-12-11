@@ -9,13 +9,17 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import net.java.html.BrwsrCtx;
 import net.java.html.boot.fx.FXBrowsers;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.Logs;
 
 /**
  * A WebDriver you can use to test DukeScriptApplications
@@ -26,15 +30,14 @@ public class WebDriverFX implements WebDriver {
 
     private DukeScriptBrowser dsBrowser;
 
-    
     public WebDriverFX(URL url, Class onPageLoad, String methodName, String... args) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
         Platform.runLater(
                 new Runnable() {
             @Override
             public void run() {
-                dsBrowser = new DukeScriptBrowser();
-                dsBrowser.start(1000, 800);
+                dsBrowser = new DukeScriptBrowser(500, 200);
+              
                 FXBrowsers.load(dsBrowser.getView(), url, onPageLoad, methodName, args);
             }
         }
@@ -63,7 +66,7 @@ public class WebDriverFX implements WebDriver {
 
     @Override
     public WebElement findElement(By by) {
-        
+
         return dsBrowser.findElement(by);
     }
 
@@ -110,7 +113,77 @@ public class WebDriverFX implements WebDriver {
 
     @Override
     public Options manage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Options() {
+            @Override
+            public void addCookie(Cookie cookie) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void deleteCookieNamed(String name) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void deleteCookie(Cookie cookie) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void deleteAllCookies() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Set<Cookie> getCookies() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Cookie getCookieNamed(String name) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Timeouts timeouts() {
+                AtomicLong implicit = new AtomicLong();
+                AtomicLong load = new AtomicLong();
+                AtomicLong script = new AtomicLong();
+                return new Timeouts() {
+                    @Override
+                    public Timeouts implicitlyWait(long time, TimeUnit unit) {
+                        implicit.set(unit.convert(time, TimeUnit.MILLISECONDS));
+                        return this;
+                    }
+
+                    @Override
+                    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
+                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+
+                    @Override
+                    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+                };
+            }
+
+            @Override
+
+            public ImeHandler ime() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Window window() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Logs logs() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
     }
 
 }

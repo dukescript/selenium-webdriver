@@ -15,25 +15,27 @@
  */
 package com.dukescript.test.selenium.webdriver;
 
-import java.net.URL;
+import com.google.common.base.Function;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.java.html.BrwsrCtx;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
 
 public class SimpleTest {
 
+    private static WebDriver driver;
     private static BrwsrCtx bc;
 
-//    @Test
     public static void test() throws InterruptedException, Exception {
-// Find the text input element by its name
         driver = new WebDriverFX(SimpleTest.class.getResource("index.html"), SimpleTest.class, "start");
     }
-    private static WebDriver driver;
 
     public static void main(String... args) {
         try {
@@ -44,20 +46,24 @@ public class SimpleTest {
     }
 
     public static void start() {
-       
         bc = BrwsrCtx.findDefault(SimpleTest.class);
         bc.execute(new Runnable() {
             @Override
             public void run() {
-                WebElement element = driver.findElement(By.id("input"));
-                // Enter something to search for
-                element.sendKeys("Cheese!");
-
-                WebElement button = driver.findElement(By.id("button"));
-                // Now submit the form. WebDriver will find the form for us from the element
-                button.click();
-                WebElement target = driver.findElement(By.id("target"));
-                Assert.assertEquals("Hallo", target.getText());
+                try {
+                    String message = "DukeScript";
+                    WebElement element = driver.findElement(By.id("input"));
+                    element.sendKeys(message);
+                    WebElement button = driver.findElement(By.id("button"));
+                    Thread.sleep(1000);
+                    button.click();
+                    WebElement target = driver.findElement(By.id("target"));
+                    
+                    Assert.assertEquals(target.getText(), message);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
             }
         });
     }

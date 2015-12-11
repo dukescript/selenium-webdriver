@@ -17,12 +17,13 @@ and open the template in the editor.
             <input  type="button" id="button" value="Click" onClick="formSubmit()">
         </form >
         <span id="target"></span>
+        <span id="log"></span>
         <script>
             function formSubmit() {
-//                document.getElementById("input").value = "Hallo";
-                document.getElementById("target").textContent = "Hallo";
+                var text = document.getElementById("input").value;
+                document.getElementById("target").textContent = text;
             }
-          
+
         </script>
     </body>
 </html>
