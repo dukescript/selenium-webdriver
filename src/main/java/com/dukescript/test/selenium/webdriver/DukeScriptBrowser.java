@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javax.swing.KeyStroke;
 import net.java.html.BrwsrCtx;
 import net.java.html.js.JavaScriptBody;
+import net.java.html.js.JavaScriptResource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -33,6 +34,7 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
+@JavaScriptResource("jQuery-2.1.4.min.js")
 final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
@@ -79,13 +81,50 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     }
 
     @Override
-    public List<WebElement> findElements(By by) {
-        return by.findElements(this);
+    public List<WebElement> findElements(final By by) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            WebDriverFX.RunVal<List<WebElement>> runVal = new WebDriverFX.RunVal<List<WebElement>>() {
+                List<WebElement> result;
+
+                @Override
+                public List<WebElement> get() {
+                    return result;
+                }
+
+                @Override
+                public void run() {
+                    result = by.findElements(DukeScriptBrowser.this);
+                }
+            };
+            ctx.execute(runVal);
+            countDownLatch.await();
+            return runVal.get();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
-    public WebElement findElement(By by) {
-        return by.findElement(this);
+    public WebElement findElement(final By by) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final WebElement[] result = new WebElement[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    WebElement findElement = by.findElement(DukeScriptBrowser.this);
+                    result[0] = findElement;
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+            return result[0];
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -145,6 +184,18 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         return null;
     }
 
+    private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
+        ArrayList<WebElement> arrayList = new ArrayList<WebElement>();
+        for (Object object : findElementsByXPath_impl) {
+            arrayList.add(new DomNodeWebElement(object, ctx));
+        }
+        return arrayList;
+    }
+
+    void setContext(BrwsrCtx ctx) {
+        this.ctx = ctx;
+    }
+
     @JavaScriptBody(args = {"using"}, body = "return document.evaluate(using, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;")
     static native Object findElementByXPath_impl(String using);
 
@@ -161,18 +212,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     @JavaScriptBody(args = {"id"}, body = "return document.getElementById(id);")
     static native Object findElementById_impl(String id);
 
-    private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
-        ArrayList<WebElement> arrayList = new ArrayList<WebElement>();
-        for (Object object : findElementsByXPath_impl) {
-            arrayList.add(new DomNodeWebElement(object, ctx));
-        }
-        return arrayList;
-    }
-
-    void setContext(BrwsrCtx ctx) {
-        this.ctx = ctx;
-    }
-
+    @JavaScriptResource("jquery.typetype.min.js")
     final static class DomNodeWebElement implements WebElement {
 
         private final Object nativeElement;
@@ -220,13 +260,23 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public void sendKeys(final CharSequence... keysToSend) {
+            final CountDownLatch cdl = new CountDownLatch(1);
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    for (CharSequence charSequence : keysToSend) {
+                        focus_impl(nativeElement);
+                        setValue_impl(nativeElement, charSequence.toString());
+                    }
+                    cdl.countDown();
+                }
+            });
+            try {
+                cdl.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
             // THIS ALSO DOESN'T UPDATE THE INPUT
-//            for (CharSequence charSequence : keysToSend) {
-//                for (int i = 0; i < charSequence.length(); i++) {
-//                    System.out.println("sendKey "+charSequence.charAt(i));
-//                    type_impl(nativeElement, String.valueOf(charSequence.charAt(i)));
-//                }
-//            }
 
             // setValue doesn't work with data-bind textInput
 //            String res = "";
@@ -234,29 +284,28 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 //                res += charSequence.toString();
 //            }
 //            setValue_impl(nativeElement, res);
-            //  Robot implementation is not synchronous
-            try {
-                final CountDownLatch countDownLatch = new CountDownLatch(1);
-                final String[] result = new String[1];
-                ctx.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        focus_impl(nativeElement);
-                        for (int i = 0; i < keysToSend.length; i++) {
-                            CharSequence cs = keysToSend[i];
-                            for (int j = 0; j < cs.length(); j++) {
-                                char c = cs.charAt(j);
-                                type(c);
-                            }
-                        }
-                        countDownLatch.countDown();
-                    }
-                });
-                countDownLatch.await();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+//  Robot implementation is not synchronous
+//            try {
+//                final CountDownLatch countDownLatch = new CountDownLatch(1);
+//                final String[] result = new String[1];
+//                ctx.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        focus_impl(nativeElement);
+//                        for (int i = 0; i < keysToSend.length; i++) {
+//                            CharSequence cs = keysToSend[i];
+//                            for (int j = 0; j < cs.length(); j++) {
+//                                char c = cs.charAt(j);
+//                                type(c);
+//                            }
+//                        }
+//                        countDownLatch.countDown();
+//                    }
+//                });
+//                countDownLatch.await();
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
 
         @Override
@@ -444,12 +493,26 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
             }
             return null;
-
         }
 
         @Override
-        public String getCssValue(String propertyName) {
-            return getCssValue_impl(nativeElement, propertyName);
+        public String getCssValue(final String propertyName) {
+            try {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final String[] result = new String[1];
+                ctx.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        result[0] = getCssValue_impl(nativeElement, propertyName);
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         @Override
@@ -527,23 +590,22 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         @JavaScriptBody(args = {"element"}, body = "element.focus();", wait4js = true)
         static native void focus_impl(Object element);
 
-        void type(char c) {
-
-            KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
-            if (null != key) {
-                if (Character.isUpperCase(c)) {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                }
-
-                robot.keyPress(key.getKeyCode());
-                robot.keyRelease(key.getKeyCode());
-
-                if (Character.isUpperCase(c)) {
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-            }
-        }
-
+//        void type(char c) {
+//
+//            KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
+//            if (null != key) {
+//                if (Character.isUpperCase(c)) {
+//                    robot.keyPress(KeyEvent.VK_SHIFT);
+//                }
+//
+//                robot.keyPress(key.getKeyCode());
+//                robot.keyRelease(key.getKeyCode());
+//
+//                if (Character.isUpperCase(c)) {
+//                    robot.keyRelease(KeyEvent.VK_SHIFT);
+//                }
+//            }
+//        }
         @JavaScriptBody(args = {"element"}, body = "var text = element.innerHTML;\n"
                 + "return text;")
         static native String getText_impl(Object element);
@@ -557,10 +619,11 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 + "releaseEvent.initKeyboardEvent('keyup', true, true, window, \n"
                 + "                                    false, false, false, false, \n"
                 + "                                    0, 30);\n"
-                + "element.dispatchEvent(releaseEvent);")
+                + "document.dispatchEvent(releaseEvent);")
         static native void type_impl(Object element, String c);
 
-        @JavaScriptBody(args = {"element", "toString"}, body = "element.value = toString;")
+        @JavaScriptBody(args = {"element", "toString"}, body = "var vm = ko.dataFor(element);\n" +
+        "vm.text(toString);")
         static native void setValue_impl(Object element, String toString);
     }
 }
