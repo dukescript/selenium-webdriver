@@ -1,5 +1,6 @@
 package com.dukescript.test.selenium.webdriver;
 
+import java.awt.AWTException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -7,6 +8,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import net.java.html.BrwsrCtx;
@@ -23,6 +26,7 @@ import org.openqa.selenium.logging.Logs;
  * @author antonepple
  */
 public final class WebDriverFX implements WebDriver, Executor {
+
     private final CountDownLatch init = new CountDownLatch(1);
     private DukeScriptBrowser dsBrowser;
     private BrwsrCtx ctx;
@@ -39,12 +43,33 @@ public final class WebDriverFX implements WebDriver, Executor {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                dsBrowser = new DukeScriptBrowser(500, 200);
-              
-                FXBrowsers.load(dsBrowser.getView(), url, done);
+                try {
+                    dsBrowser = new DukeScriptBrowser(500, 200);
+
+                    FXBrowsers.load(dsBrowser.getView(), url, done);
+                } catch (AWTException ex) {
+                    Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         init.await();
+        dsBrowser.setContext(ctx);
+    }
+
+    public WebDriverFX(final URL url, final Class klass, final String method
+    ) throws Exception {
+        JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dsBrowser = new DukeScriptBrowser(500, 200);
+                    FXBrowsers.load(dsBrowser.getView(), url, klass, method);
+                } catch (AWTException ex) {
+                    Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     @Override
@@ -68,9 +93,24 @@ public final class WebDriverFX implements WebDriver, Executor {
     }
 
     @Override
-    public WebElement findElement(By by) {
-
-        return dsBrowser.findElement(by);
+    public WebElement findElement(final By by) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final WebElement[] result = new WebElement[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    WebElement findElement = dsBrowser.findElement(by);
+                    result[0] = findElement;
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+            return result[0];
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -187,6 +227,18 @@ public final class WebDriverFX implements WebDriver, Executor {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
+    }
+
+    public void executeAndWait(final Runnable command) throws InterruptedException {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        ctx.execute(new Runnable() {
+            @Override
+            public void run() {
+                command.run();
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
     }
 
     @Override

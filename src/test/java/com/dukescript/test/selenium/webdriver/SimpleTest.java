@@ -10,23 +10,59 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-@RunWith(WebDriverFXRunner.class)
+//@RunWith(WebDriverFXRunner.class)
 public class SimpleTest {
-    private static WebDriver driver;
+
+    private static WebDriverFX driver;
 
     @BeforeClass
     public static void test() throws InterruptedException, Exception {
         driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"));
+        driver.executeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                TestModel testModel = new TestModel("Hello", "World");
+                testModel.applyBindings();
+            }
+        });
     }
-    
+
     @Test
     public void withModel() {
+        WebElement element = driver.findElement(By.id("target"));
+        Assert.assertEquals("Hello", element.getText());
+        WebElement button = driver.findElement(By.id("button"));
+        button.click();
+        Assert.assertEquals("World", element.getText());
+        WebElement input = driver.findElement(By.id("input"));
+        input.sendKeys("DukeScript");
+        button.click();
+//        Assert.assertEquals("DukeScript", element.getText());
+    }
+
+    public static void withModel1() {
         TestModel testModel = new TestModel("Hello", "World");
         testModel.applyBindings();
         WebElement element = driver.findElement(By.id("target"));
-        Assert.assertEquals("Hello",element.getText());
+        Assert.assertEquals("Hello", element.getText());
         WebElement button = driver.findElement(By.id("button"));
+//        button.click();
+//        Assert.assertEquals("World", element.getText());
+        WebElement input = driver.findElement(By.id("input"));
+        input.clear();
+        input.sendKeys("DukeScript");
+
         button.click();
-        Assert.assertEquals("World",element.getText());
+//        Assert.assertEquals("DukeScript", element.getText());
     }
+
+    public static void main(String... args) {
+        try {
+            driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"), SimpleTest.class, "withModel1");
+
+        } catch (Exception ex) {
+            Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

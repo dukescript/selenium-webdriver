@@ -5,6 +5,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
@@ -16,6 +17,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javax.swing.KeyStroke;
+import net.java.html.BrwsrCtx;
 import net.java.html.js.JavaScriptBody;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -35,9 +37,12 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
     private WebView view = new WebView();
+    private static Robot robot;
+    private BrwsrCtx ctx;
 
-    DukeScriptBrowser(int width, int height) {
+    DukeScriptBrowser(int width, int height) throws AWTException {
         start(width, height);
+        robot = new Robot();
     }
 
     public void start(double width, double height) {
@@ -85,7 +90,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
     @Override
     public WebElement findElementById(String using) {
-        return new DomNodeWebElement(findElementById_impl(using));
+        return new DomNodeWebElement(findElementById_impl(using), ctx);
     }
 
     @Override
@@ -95,7 +100,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
     @Override
     public WebElement findElementByXPath(String using) {
-        return new DomNodeWebElement(findElementByXPath_impl(using));
+        return new DomNodeWebElement(findElementByXPath_impl(using), ctx);
     }
 
     @Override
@@ -122,22 +127,41 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
         ArrayList<WebElement> arrayList = new ArrayList<WebElement>();
         for (Object object : findElementsByXPath_impl) {
-            arrayList.add(new DomNodeWebElement(object));
+            arrayList.add(new DomNodeWebElement(object, ctx));
         }
         return arrayList;
+    }
+
+    void setContext(BrwsrCtx ctx) {
+        this.ctx = ctx;
     }
 
     final static class DomNodeWebElement implements WebElement {
 
         private final Object nativeElement;
+        private final BrwsrCtx ctx;
 
-        private DomNodeWebElement(Object nativeElement) {
+        private DomNodeWebElement(Object nativeElement, BrwsrCtx ctx) {
             this.nativeElement = nativeElement;
+            this.ctx = ctx;
         }
 
         @Override
         public void click() {
-            click_impl(nativeElement);
+            try {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final String[] result = new String[1];
+                ctx.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        click_impl(nativeElement);
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         @Override
@@ -147,21 +171,44 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         }
 
         @Override
-        public void sendKeys(CharSequence... keysToSend) {
-            String res = "";
-            for (CharSequence charSequence : keysToSend) {
-                res += charSequence.toString();
-            }
-            setValue_impl(nativeElement, res);
-            // TODO Robot implementation is not synchronous
-//            for (int i = 0; i < keysToSend.length; i++) {
-//                CharSequence cs = keysToSend[i];
-//                for (int j = 0; j < cs.length(); j++) {
-//                    char c = cs.charAt(j);
-//                    focus_impl(nativeElement);
-//                    type(c);
+        public void sendKeys(final CharSequence... keysToSend) {
+            // THIS ALSO DOESN'T UPDATE THE INPUT
+//            for (CharSequence charSequence : keysToSend) {
+//                for (int i = 0; i < charSequence.length(); i++) {
+//                    System.out.println("sendKey "+charSequence.charAt(i));
+//                    type_impl(nativeElement, String.valueOf(charSequence.charAt(i)));
 //                }
 //            }
+
+            // setValue doesn't work with data-bind textInput
+//            String res = "";
+//            for (CharSequence charSequence : keysToSend) {
+//                res += charSequence.toString();
+//            }
+//            setValue_impl(nativeElement, res);
+            //  Robot implementation is not synchronous
+            try {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final String[] result = new String[1];
+                ctx.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        focus_impl(nativeElement);
+                        for (int i = 0; i < keysToSend.length; i++) {
+                            CharSequence cs = keysToSend[i];
+                            for (int j = 0; j < cs.length(); j++) {
+                                char c = cs.charAt(j);
+                                type(c);
+                            }
+                        }
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
 
         @Override
@@ -191,7 +238,22 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public String getText() {
-            return getText_impl(nativeElement);
+            try {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final String[] result = new String[1];
+                ctx.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        result[0] = getText_impl(nativeElement);
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         @Override
@@ -283,8 +345,8 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 + "}\n", wait4js = true)
         static native void submit_impl(Object element);
 
-        @JavaScriptBody(args = {"nativeElement"}, body = "element.value=''", wait4js = true)
-        static native void clear_impl(Object nativeElement);
+        @JavaScriptBody(args = {"element"}, body = "element.value=''", wait4js = true)
+        static native void clear_impl(Object element);
 
 //        @JavaScriptBody(args = {"target", "c"}, body = "var evt = document.createEvent('KeyboardEvent');\n"
 //                + "evt.initKeyboardEvent('keypress', true, true, null, false, false, false, false, c.charCodeAt(0), 0);"
@@ -300,50 +362,37 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         static native void focus_impl(Object element);
 
         void type(char c) {
-            try {
-                Robot robot = new Robot();
-                KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
-                if (null != key) {
-                    // should only have to worry about case with standard characters
-                    if (Character.isUpperCase(c)) {
-                        robot.keyPress(KeyEvent.VK_SHIFT);
-                    }
 
-                    robot.keyPress(key.getKeyCode());
-                    robot.keyRelease(key.getKeyCode());
-
-                    if (Character.isUpperCase(c)) {
-                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                    }
+            KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
+            if (null != key) {
+                if (Character.isUpperCase(c)) {
+                    robot.keyPress(KeyEvent.VK_SHIFT);
                 }
-            } catch (AWTException ex) {
-                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
+                robot.keyPress(key.getKeyCode());
+                robot.keyRelease(key.getKeyCode());
+
+                if (Character.isUpperCase(c)) {
+                    robot.keyRelease(KeyEvent.VK_SHIFT);
+                }
+            }
         }
 
         @JavaScriptBody(args = {"element"}, body = "var text = element.innerHTML;\n"
                 + "return text;")
         static native String getText_impl(Object element);
 
-        @JavaScriptBody(args = {"element", "c"}, body = "var keyboardEvent = document.createEvent(\"KeyboardEvent\");\n"
-                + "var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? \"initKeyboardEvent\" : \"initKeyEvent\";\n"
-                + "\n"
-                + "\n"
-                + "keyboardEvent[initMethod](\n"
-                + "                   \"keydown\", // event type : keydown, keyup, keypress\n"
-                + "                    true, // bubbles\n"
-                + "                    true, // cancelable\n"
-                + "                    window, // viewArg: should be window\n"
-                + "                    false, // ctrlKeyArg\n"
-                + "                    false, // altKeyArg\n"
-                + "                    false, // shiftKeyArg\n"
-                + "                    false, // metaKeyArg\n"
-                + "                    40, // keyCodeArg : unsigned long the virtual key code, else 0\n"
-                + "                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0\n"
-                + ");\n"
-                + "document.dispatchEvent(keyboardEvent);")
-        static native void type_impl(Object element, char c);
+        @JavaScriptBody(args = {"element", "c"}, body = "var pressEvent = document.createEvent('KeyboardEvent');\n"
+                + "          pressEvent.initKeyboardEvent('keypress', true, true, window, \n"
+                + "                                    false, false, false, false, \n"
+                + "                                    0, 30);\n"
+                + "          element.dispatchEvent(pressEvent);"
+                + "var releaseEvent = document.createEvent('KeyboardEvent');\n"
+                + "releaseEvent.initKeyboardEvent('keyup', true, true, window, \n"
+                + "                                    false, false, false, false, \n"
+                + "                                    0, 30);\n"
+                + "element.dispatchEvent(releaseEvent);")
+        static native void type_impl(Object element, String c);
 
         @JavaScriptBody(args = {"element", "toString"}, body = "element.value = toString;")
         static native void setValue_impl(Object element, String toString);
