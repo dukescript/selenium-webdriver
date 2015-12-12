@@ -13,11 +13,9 @@ and open the template in the editor.
     <body>
         <div data-bind="text: text">TODO write content</div>
         <form id="form" >
-            <input id="input" data-bind="textInput: input">
+            <input id="input" data-bind="textInput: input" value="initial">
             <input  type="button" id="button" value="Click" data-bind="click: commit">
         </form >
         <span id="target" data-bind="text: text"></span>
-        <span id="log"></span>
-
     </body>
 </html>
