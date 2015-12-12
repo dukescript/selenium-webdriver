@@ -88,8 +88,29 @@ public final class WebDriverFX implements WebDriver, Executor {
     }
 
     @Override
-    public List<WebElement> findElements(By by) {
-        return dsBrowser.findElements(by);
+    public List<WebElement> findElements(final By by) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            RunVal<List<WebElement>> runVal = new RunVal<List<WebElement>>() {
+                List<WebElement> result;
+
+                @Override
+                public List<WebElement> get() {
+                    return result;
+                }
+
+                @Override
+                public void run() {
+                    result = findElements(by);
+                }
+            };
+            ctx.execute(runVal);
+            countDownLatch.await();
+            return runVal.get();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -244,5 +265,10 @@ public final class WebDriverFX implements WebDriver, Executor {
     @Override
     public void execute(Runnable command) {
         ctx.execute(command);
+    }
+
+    public static interface RunVal<T> extends Runnable {
+
+        public T get();
     }
 }

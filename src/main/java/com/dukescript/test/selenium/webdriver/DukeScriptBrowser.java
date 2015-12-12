@@ -99,13 +99,50 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     }
 
     @Override
-    public WebElement findElementByXPath(String using) {
-        return new DomNodeWebElement(findElementByXPath_impl(using), ctx);
+    public WebElement findElementByXPath(final String using) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Object[] result = new Object[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = findElementByXPath_impl(using);
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+            return new DomNodeWebElement(result[0], ctx);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
-    public List<WebElement> findElementsByXPath(String using) {
-        return wrap(findElementsByXPath_impl(using));
+    public List<WebElement> findElementsByXPath(final String using) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            WebDriverFX.RunVal<Object[]> runVal = new WebDriverFX.RunVal<Object[]>() {
+                Object[] result;
+
+                @Override
+                public Object[] get() {
+                    return result;
+                }
+
+                @Override
+                public void run() {
+                    Object[] findElementsByXPath_impl = findElementsByXPath_impl(using);
+                    countDownLatch.countDown();
+                }
+            };
+            ctx.execute(runVal);
+            countDownLatch.await();
+            return wrap(runVal.get());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @JavaScriptBody(args = {"using"}, body = "return document.evaluate(using, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;")
@@ -166,8 +203,19 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public void submit() {
-            System.out.println("submit");
-            submit_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    submit_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         @Override
@@ -213,27 +261,99 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public void clear() {
-            clear_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    clear_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         @Override
         public String getTagName() {
-            return getTagName_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final String[] result = new String[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = getTagName_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         @Override
-        public String getAttribute(String name) {
-            return getAttribute_impl(nativeElement, name);
+        public String getAttribute(final String name) {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final String[] result = new String[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = getAttribute_impl(nativeElement, name);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         @Override
         public boolean isSelected() {
-            return isSelected_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final boolean[] result = new boolean[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = isSelected_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
         }
 
         @Override
         public boolean isEnabled() {
-            return isEnabled_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final boolean[] result = new boolean[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = isEnabled_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
         }
 
         @Override
@@ -268,17 +388,63 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public boolean isDisplayed() {
-            return isDisplayed_impl(nativeElement);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final boolean[] result = new boolean[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = isDisplayed_impl(nativeElement);
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
         }
 
         @Override
         public Point getLocation() {
-            return new Point(getLeft_impl(nativeElement), getTop_impl(nativeElement));
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Point[] result = new Point[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = new Point(getLeft_impl(nativeElement), getTop_impl(nativeElement));
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
         }
 
         @Override
         public Dimension getSize() {
-            return new Dimension(getWidth_impl(nativeElement), getHeight_impl(nativeElement));
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Dimension[] result = new Dimension[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = new Dimension(getWidth_impl(nativeElement), getHeight_impl(nativeElement));
+                    countDownLatch.countDown();
+                }
+            });
+            try {
+                countDownLatch.await();
+                return result[0];
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+
         }
 
         @Override
