@@ -145,7 +145,7 @@ public class DukeScriptBrowser extends Stage implements SearchContext, FindsById
 
         @Override
         public void sendKeys(CharSequence... keysToSend) {
-            String res= "";
+            String res = "";
             for (CharSequence charSequence : keysToSend) {
                 res += charSequence.toString();
             }
@@ -305,10 +305,10 @@ public class DukeScriptBrowser extends Stage implements SearchContext, FindsById
                     if (Character.isUpperCase(c)) {
                         robot.keyPress(KeyEvent.VK_SHIFT);
                     }
-                    
+
                     robot.keyPress(key.getKeyCode());
                     robot.keyRelease(key.getKeyCode());
-                    
+
                     if (Character.isUpperCase(c)) {
                         robot.keyRelease(KeyEvent.VK_SHIFT);
                     }
@@ -323,7 +323,26 @@ public class DukeScriptBrowser extends Stage implements SearchContext, FindsById
                 + "return text;")
         static native String getText_impl(Object element);
 
-        @JavaScriptBody(args = { "element", "toString" }, body = "element.value = toString;")
-        static native  void setValue_impl(Object element, String toString);
+        @JavaScriptBody(args = {"element", "c"}, body = "var keyboardEvent = document.createEvent(\"KeyboardEvent\");\n"
+                + "var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? \"initKeyboardEvent\" : \"initKeyEvent\";\n"
+                + "\n"
+                + "\n"
+                + "keyboardEvent[initMethod](\n"
+                + "                   \"keydown\", // event type : keydown, keyup, keypress\n"
+                + "                    true, // bubbles\n"
+                + "                    true, // cancelable\n"
+                + "                    window, // viewArg: should be window\n"
+                + "                    false, // ctrlKeyArg\n"
+                + "                    false, // altKeyArg\n"
+                + "                    false, // shiftKeyArg\n"
+                + "                    false, // metaKeyArg\n"
+                + "                    40, // keyCodeArg : unsigned long the virtual key code, else 0\n"
+                + "                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0\n"
+                + ");\n"
+                + "document.dispatchEvent(keyboardEvent);")
+        static native void type_impl(Object element, char c);
+
+        @JavaScriptBody(args = {"element", "toString"}, body = "element.value = toString;")
+        static native void setValue_impl(Object element, String toString);
     }
 }

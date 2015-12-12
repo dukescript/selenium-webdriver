@@ -67,5 +67,10 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.html</groupId>
+            <artifactId>ko4j</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>   
 </project>
