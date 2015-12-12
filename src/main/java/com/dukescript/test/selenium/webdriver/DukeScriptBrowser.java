@@ -31,7 +31,7 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
-public class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath {
+final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
     private WebView view = new WebView();
@@ -51,8 +51,11 @@ public class DukeScriptBrowser extends Stage implements SearchContext, FindsById
             }
         }
         );
-        engine.titleProperty().addListener((observable, oldValue, newValue) -> {
-            DukeScriptBrowser.this.setTitle(newValue);
+        engine.titleProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                DukeScriptBrowser.this.setTitle(newValue);
+            }
         });
         StackPane root = new StackPane();
         root.getChildren().add(view);
@@ -124,7 +127,7 @@ public class DukeScriptBrowser extends Stage implements SearchContext, FindsById
         return arrayList;
     }
 
-    public static class DomNodeWebElement implements WebElement {
+    final static class DomNodeWebElement implements WebElement {
 
         private final Object nativeElement;
 

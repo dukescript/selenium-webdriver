@@ -3,10 +3,13 @@ package com.dukescript.test.selenium.webdriver;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import net.java.html.BrwsrCtx;
 import net.java.html.boot.fx.FXBrowsers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -19,22 +22,29 @@ import org.openqa.selenium.logging.Logs;
  *
  * @author antonepple
  */
-public class WebDriverFX implements WebDriver {
-
+public final class WebDriverFX implements WebDriver, Executor {
+    private final CountDownLatch init = new CountDownLatch(1);
     private DukeScriptBrowser dsBrowser;
+    private BrwsrCtx ctx;
 
-    public WebDriverFX(URL url, Class onPageLoad, String methodName, String... args) throws Exception {
+    public WebDriverFX(final URL url) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
-        Platform.runLater(
-                new Runnable() {
+        final Runnable done = new Runnable() {
+            @Override
+            public void run() {
+                ctx = BrwsrCtx.findDefault(WebDriverFX.class);
+                init.countDown();
+            }
+        };
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 dsBrowser = new DukeScriptBrowser(500, 200);
               
-                FXBrowsers.load(dsBrowser.getView(), url, onPageLoad, methodName, args);
+                FXBrowsers.load(dsBrowser.getView(), url, done);
             }
-        }
-        );
+        });
+        init.await();
     }
 
     @Override
@@ -139,7 +149,7 @@ public class WebDriverFX implements WebDriver {
 
             @Override
             public Timeouts timeouts() {
-                AtomicLong implicit = new AtomicLong();
+                final AtomicLong implicit = new AtomicLong();
                 AtomicLong load = new AtomicLong();
                 AtomicLong script = new AtomicLong();
                 return new Timeouts() {
@@ -179,4 +189,8 @@ public class WebDriverFX implements WebDriver {
         };
     }
 
+    @Override
+    public void execute(Runnable command) {
+        ctx.execute(command);
+    }
 }
