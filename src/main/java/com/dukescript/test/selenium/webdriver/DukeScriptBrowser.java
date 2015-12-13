@@ -292,17 +292,19 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                     @Override
                     public void run() {
                         focus_impl(nativeElement);
-                        for (int i = 0; i < keysToSend.length; i++) {
-                            CharSequence cs = keysToSend[i];
-                            for (int j = 0; j < cs.length(); j++) {
-                                char c = cs.charAt(j);
-                                type(c);
-                            }
-                        }
-                        countDownLatch.countDown();
+                countDownLatch.countDown();
+
                     }
                 });
                 countDownLatch.await();
+                for (int i = 0; i < keysToSend.length; i++) {
+                    CharSequence cs = keysToSend[i];
+                    for (int j = 0; j < cs.length(); j++) {
+                        char c = cs.charAt(j);
+                        type(c);
+                    }
+                }
+                Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -606,6 +608,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 }
             }
         }
+
         @JavaScriptBody(args = {"element"}, body = "var text = element.innerHTML;\n"
                 + "return text;")
         static native String getText_impl(Object element);
@@ -622,8 +625,8 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 + "document.dispatchEvent(releaseEvent);")
         static native void type_impl(Object element, String c);
 
-        @JavaScriptBody(args = {"element", "toString"}, body = "var vm = ko.dataFor(element);\n" +
-        "vm.text(toString);")
+        @JavaScriptBody(args = {"element", "toString"}, body = "var vm = ko.dataFor(element);\n"
+                + "vm.text(toString);")
         static native void setValue_impl(Object element, String toString);
     }
 }
