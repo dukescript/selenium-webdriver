@@ -37,6 +37,11 @@ public class SimpleTest {
         input.sendKeys("DukeScript");
         button.click();
         Assert.assertEquals("DukeScript", element.getText());
+        try {
+            Thread.sleep(1000); // just to see the webview updates as well
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void withModel1() {
