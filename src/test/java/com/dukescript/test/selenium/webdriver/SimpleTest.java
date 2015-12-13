@@ -2,16 +2,17 @@ package com.dukescript.test.selenium.webdriver;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.java.html.BrwsrCtx;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-//@RunWith(WebDriverFXRunner.class)
 public class SimpleTest {
 
     private static WebDriverFX driver;
+    private static TestModel testModel;
 
     @BeforeClass
     public static void test() throws InterruptedException, Exception {
@@ -19,7 +20,7 @@ public class SimpleTest {
         driver.executeAndWait(new Runnable() {
             @Override
             public void run() {
-                TestModel testModel = new TestModel("Hello", "World");
+                testModel = new TestModel("Hello", "World");
                 testModel.applyBindings();
             }
         });
@@ -27,6 +28,8 @@ public class SimpleTest {
 
     @Test
     public void withModel() {
+        // please note that this method is not executed in BrwsrCtx
+        // to allow seeing updates in the Browser while debugging a test
         WebElement element = driver.findElement(By.id("target"));
         Assert.assertEquals("Hello", element.getText());
         WebElement button = driver.findElement(By.id("button"));
@@ -37,30 +40,6 @@ public class SimpleTest {
         input.sendKeys("DukeScript");
         button.click();
         Assert.assertEquals("DukeScript", element.getText());
-        try {
-            Thread.sleep(1000); // just to see the webview updates as well
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
-
-    public static void withModel1() {
-  
-    }
-
-    public static void main(String... args) {
-        try {
-            driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"), SimpleTest.class, "withModel1");
-            driver.executeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    TestModel testModel = new TestModel("Hello", "World");
-                    testModel.applyBindings();
-                }
-            });
-        } catch (Exception ex) {
-            Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    
 }

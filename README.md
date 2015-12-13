@@ -1,7 +1,7 @@
 # selenium-webdriver
 
-A Selenium Webdriver for running DukeScript Integration tests. Test methods are integrated with BrwsrCtx, to be executed on the
-correct thread. This isn't a full implementation of the WebDriver API yet, but it already allows some useful functions. Use like this:
+A Selenium Webdriver for running DukeScript Integration tests. Test methods are integrated with BrwsrCtx to be executed on the
+correct thread. This isn't a full implementation of the WebDriver API yet, but it already supports some useful features. Use like this:
 
 ```
 public class SimpleTest {
