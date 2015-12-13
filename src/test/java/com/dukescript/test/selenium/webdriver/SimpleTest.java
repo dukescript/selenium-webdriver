@@ -35,6 +35,11 @@ public class SimpleTest {
         WebElement input = driver.findElement(By.id("input"));
         input.clear();
         input.sendKeys("DukeScript");
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SimpleTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         button.click();
         Assert.assertEquals("DukeScript", element.getText());
     }

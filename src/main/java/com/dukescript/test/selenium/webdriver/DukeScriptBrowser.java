@@ -260,22 +260,22 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public void sendKeys(final CharSequence... keysToSend) {
-            final CountDownLatch cdl = new CountDownLatch(1);
-            ctx.execute(new Runnable() {
-                @Override
-                public void run() {
-                    for (CharSequence charSequence : keysToSend) {
-                        focus_impl(nativeElement);
-                        setValue_impl(nativeElement, charSequence.toString());
-                    }
-                    cdl.countDown();
-                }
-            });
-            try {
-                cdl.await();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            final CountDownLatch cdl = new CountDownLatch(1);
+//            ctx.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    for (CharSequence charSequence : keysToSend) {
+//                        focus_impl(nativeElement);
+//                        setValue_impl(nativeElement, charSequence.toString());
+//                    }
+//                    cdl.countDown();
+//                }
+//            });
+//            try {
+//                cdl.await();
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             // THIS ALSO DOESN'T UPDATE THE INPUT
 
             // setValue doesn't work with data-bind textInput
@@ -285,27 +285,27 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 //            }
 //            setValue_impl(nativeElement, res);
 //  Robot implementation is not synchronous
-//            try {
-//                final CountDownLatch countDownLatch = new CountDownLatch(1);
-//                final String[] result = new String[1];
-//                ctx.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        focus_impl(nativeElement);
-//                        for (int i = 0; i < keysToSend.length; i++) {
-//                            CharSequence cs = keysToSend[i];
-//                            for (int j = 0; j < cs.length(); j++) {
-//                                char c = cs.charAt(j);
-//                                type(c);
-//                            }
-//                        }
-//                        countDownLatch.countDown();
-//                    }
-//                });
-//                countDownLatch.await();
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-//            }
+            try {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final String[] result = new String[1];
+                ctx.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        focus_impl(nativeElement);
+                        for (int i = 0; i < keysToSend.length; i++) {
+                            CharSequence cs = keysToSend[i];
+                            for (int j = 0; j < cs.length(); j++) {
+                                char c = cs.charAt(j);
+                                type(c);
+                            }
+                        }
+                        countDownLatch.countDown();
+                    }
+                });
+                countDownLatch.await();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         @Override
@@ -590,22 +590,22 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         @JavaScriptBody(args = {"element"}, body = "element.focus();", wait4js = true)
         static native void focus_impl(Object element);
 
-//        void type(char c) {
-//
-//            KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
-//            if (null != key) {
-//                if (Character.isUpperCase(c)) {
-//                    robot.keyPress(KeyEvent.VK_SHIFT);
-//                }
-//
-//                robot.keyPress(key.getKeyCode());
-//                robot.keyRelease(key.getKeyCode());
-//
-//                if (Character.isUpperCase(c)) {
-//                    robot.keyRelease(KeyEvent.VK_SHIFT);
-//                }
-//            }
-//        }
+        void type(char c) {
+
+            KeyStroke key = KeyStroke.getKeyStroke("pressed " + Character.toUpperCase(c));
+            if (null != key) {
+                if (Character.isUpperCase(c)) {
+                    robot.keyPress(KeyEvent.VK_SHIFT);
+                }
+
+                robot.keyPress(key.getKeyCode());
+                robot.keyRelease(key.getKeyCode());
+
+                if (Character.isUpperCase(c)) {
+                    robot.keyRelease(KeyEvent.VK_SHIFT);
+                }
+            }
+        }
         @JavaScriptBody(args = {"element"}, body = "var text = element.innerHTML;\n"
                 + "return text;")
         static native String getText_impl(Object element);
