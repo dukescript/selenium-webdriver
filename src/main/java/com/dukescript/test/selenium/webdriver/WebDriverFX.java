@@ -120,7 +120,8 @@ public final class WebDriverFX implements WebDriver, Executor {
 
     @Override
     public List<WebElement> findElements(final By by) {
-        return dsBrowser.findElements(by);
+        List<WebElement> found = dsBrowser.findElements(by);
+        return found;
     }
 
     @Override

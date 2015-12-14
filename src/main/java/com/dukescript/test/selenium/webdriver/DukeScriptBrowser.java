@@ -107,6 +107,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                 @Override
                 public void run() {
                     result = by.findElements(DukeScriptBrowser.this);
+                    countDownLatch.countDown();
                 }
             };
             ctx.execute(runVal);
