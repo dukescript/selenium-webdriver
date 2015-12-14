@@ -22,7 +22,6 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
@@ -33,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
@@ -42,7 +40,6 @@ import javafx.stage.Stage;
 import javax.swing.KeyStroke;
 import net.java.html.BrwsrCtx;
 import net.java.html.js.JavaScriptBody;
-import net.java.html.js.JavaScriptResource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -50,6 +47,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByXPath;
 
@@ -57,7 +55,7 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
-final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath {
+final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
     private WebView view = new WebView();
@@ -72,6 +70,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     public void start(double width, double height) {
 
         WebEngine engine = view.getEngine();
+        ConsoleLogger.register(engine);
         engine.titleProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -197,6 +196,53 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         return null;
     }
 
+    @Override
+    public List<WebElement> findElementsByCssSelector(final String using) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            WebDriverFX.RunVal<Object[]> runVal = new WebDriverFX.RunVal<Object[]>() {
+                Object[] result;
+
+                @Override
+                public Object[] get() {
+                    return result;
+                }
+
+                @Override
+                public void run() {
+                    Object[] findElementsByXPath_impl = findElementsByCSSSelector_impl(using);
+                    countDownLatch.countDown();
+                }
+            };
+            ctx.execute(runVal);
+            countDownLatch.await();
+            return wrap(runVal.get());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public WebElement findElementByCssSelector(final String using) {
+        try {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Object[] result = new Object[1];
+            ctx.execute(new Runnable() {
+                @Override
+                public void run() {
+                    result[0] = findElementByCSSSelector_impl(using);
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+            return new DomNodeWebElement(result[0], ctx);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
         ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
@@ -221,6 +267,17 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
             + "}"
             + "return arr;")
     static native Object[] findElementsByXPath_impl(String using);
+
+    @JavaScriptBody(args = {"using"}, body = "return document.querySelector(using);")
+    static native Object findElementByCSSSelector_impl(String using);
+
+    @JavaScriptBody(args = {"using"}, body = "var nodeList = document.querySelectorAll(using);\n"
+            + "var arr = [];\n"
+            + "for (var i = 0; i < nodeList.length; i++) {\n"
+            + "    arr.push(nodeList[i]);\n"
+            + "}"
+            + "return arr;")
+    static native Object[] findElementsByCSSSelector_impl(String using);
 
     @JavaScriptBody(args = {"id"}, body = "return document.getElementById(id);")
     static native Object findElementById_impl(String id);
@@ -280,8 +337,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                     @Override
                     public void run() {
                         focus_impl(nativeElement);
-                countDownLatch.countDown();
-
+                        countDownLatch.countDown();
                     }
                 });
                 countDownLatch.await();
@@ -292,7 +348,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
                         type(c);
                     }
                 }
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
             }

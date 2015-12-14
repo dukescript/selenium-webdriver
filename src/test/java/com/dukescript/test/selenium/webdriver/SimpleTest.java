@@ -22,7 +22,8 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
+import java.util.List;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -60,6 +61,16 @@ public class SimpleTest {
         input.sendKeys("DukeScript");
         button.click();
         Assert.assertEquals("DukeScript", element.getText());
+        WebElement findElement = driver.findElement(By.cssSelector(".bla"));
+        Assert.assertNotNull(findElement);
+        Assert.assertEquals("DukeScript", findElement.getText());
+        List<WebElement> findElements = driver.findElements(By.cssSelector(".bla"));
+        Assert.assertEquals(findElements.size(), 1);
     }
-    
+
+    @AfterClass
+    public static void close() {
+        driver.close();
+    }
+
 }
