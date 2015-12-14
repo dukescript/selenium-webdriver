@@ -79,7 +79,7 @@ public final class WebDriverFX implements WebDriver, Executor {
      * @param url The URL of the pafe to be loaded
      * @throws Exception 
      */
-    public WebDriverFX(final URL url) throws Exception {
+    public WebDriverFX(final URL url, final double width, final double height) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
         final Runnable done = new Runnable() {
             @Override
@@ -92,7 +92,7 @@ public final class WebDriverFX implements WebDriver, Executor {
             @Override
             public void run() {
                 try {
-                    dsBrowser = new DukeScriptBrowser(500, 200);
+                    dsBrowser = new DukeScriptBrowser(width, height);
                     FXBrowsers.load(dsBrowser.getView(), url, done);
                 } catch (AWTException ex) {
                     Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,6 +102,10 @@ public final class WebDriverFX implements WebDriver, Executor {
         init.await();
         dsBrowser.setContext(ctx);
     }
+    
+     public WebDriverFX(final URL url) throws Exception {
+         this(url, 800,600);
+     }
 
     @Override
     public void get(String string) {

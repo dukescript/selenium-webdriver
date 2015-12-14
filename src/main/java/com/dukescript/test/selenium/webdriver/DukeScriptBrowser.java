@@ -62,7 +62,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     private static Robot robot;
     private BrwsrCtx ctx;
 
-    DukeScriptBrowser(int width, int height) throws AWTException {
+    DukeScriptBrowser(double width, double height) throws AWTException {
         start(width, height);
         robot = new Robot();
     }
