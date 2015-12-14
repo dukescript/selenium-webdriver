@@ -151,96 +151,22 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
     @Override
     public WebElement findElementByXPath(final String using) {
-        try {
-            final CountDownLatch countDownLatch = new CountDownLatch(1);
-            final Object[] result = new Object[1];
-            ctx.execute(new Runnable() {
-                @Override
-                public void run() {
-                    result[0] = findElementByXPath_impl(using);
-                    countDownLatch.countDown();
-                }
-            });
-            countDownLatch.await();
-            return new DomNodeWebElement(result[0], ctx);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return new DomNodeWebElement(findElementByXPath_impl(using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByXPath(final String using) {
-        try {
-            final CountDownLatch countDownLatch = new CountDownLatch(1);
-            WebDriverFX.RunVal<Object[]> runVal = new WebDriverFX.RunVal<Object[]>() {
-                Object[] result;
-
-                @Override
-                public Object[] get() {
-                    return result;
-                }
-
-                @Override
-                public void run() {
-                    Object[] findElementsByXPath_impl = findElementsByXPath_impl(using);
-                    countDownLatch.countDown();
-                }
-            };
-            ctx.execute(runVal);
-            countDownLatch.await();
-            return wrap(runVal.get());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return wrap(findElementsByXPath_impl(using));
     }
 
     @Override
     public List<WebElement> findElementsByCssSelector(final String using) {
-        try {
-            final CountDownLatch countDownLatch = new CountDownLatch(1);
-            WebDriverFX.RunVal<Object[]> runVal = new WebDriverFX.RunVal<Object[]>() {
-                Object[] result;
-
-                @Override
-                public Object[] get() {
-                    return result;
-                }
-
-                @Override
-                public void run() {
-                    Object[] findElementsByXPath_impl = findElementsByCSSSelector_impl(using);
-                    countDownLatch.countDown();
-                }
-            };
-            ctx.execute(runVal);
-            countDownLatch.await();
-            return wrap(runVal.get());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return wrap(findElementsByCSSSelector_impl(using));
     }
 
     @Override
     public WebElement findElementByCssSelector(final String using) {
-        try {
-            final CountDownLatch countDownLatch = new CountDownLatch(1);
-            final Object[] result = new Object[1];
-            ctx.execute(new Runnable() {
-                @Override
-                public void run() {
-                    result[0] = findElementByCSSSelector_impl(using);
-                    countDownLatch.countDown();
-                }
-            });
-            countDownLatch.await();
-            return new DomNodeWebElement(result[0], ctx);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return new DomNodeWebElement(findElementByCSSSelector_impl(using), ctx);
     }
 
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
@@ -272,10 +198,12 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     static native Object findElementByCSSSelector_impl(String using);
 
     @JavaScriptBody(args = {"using"}, body = "var nodeList = document.querySelectorAll(using);\n"
+            + "console.log('nodeList '+nodeList);\n"
             + "var arr = [];\n"
             + "for (var i = 0; i < nodeList.length; i++) {\n"
+            + "    console.log('node '+nodeList[i]);\n"
             + "    arr.push(nodeList[i]);\n"
-            + "}"
+            + "};"
             + "return arr;")
     static native Object[] findElementsByCSSSelector_impl(String using);
 
