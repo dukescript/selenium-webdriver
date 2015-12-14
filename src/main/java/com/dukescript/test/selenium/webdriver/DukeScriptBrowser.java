@@ -1,5 +1,28 @@
 package com.dukescript.test.selenium.webdriver;
 
+/*
+ * #%L
+ * DukeScriptScriptBrowser - a file from the "selenium webdriver" project.
+ * Visit http://dukescript.com for support and commercial license.
+ * %%
+ * Copyright (C) 2015 Dukehoff GmbH
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
@@ -34,7 +57,6 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
-@JavaScriptResource("jQuery-2.1.4.min.js")
 final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
@@ -50,14 +72,6 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     public void start(double width, double height) {
 
         WebEngine engine = view.getEngine();
-        engine.getLoadWorker().stateProperty().addListener(
-                new ChangeListener<Worker.State>() {
-            @Override
-            public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
-                LOGGER.info("Browser State change " + newValue.name());
-            }
-        }
-        );
         engine.titleProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -69,7 +83,6 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         Scene scene = new Scene(root, width, height);
         setScene(scene);
         show();
-
     }
 
     public WebView getView() {
@@ -185,7 +198,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     }
 
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
-        ArrayList<WebElement> arrayList = new ArrayList<WebElement>();
+        ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
             arrayList.add(new DomNodeWebElement(object, ctx));
         }
@@ -212,7 +225,6 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
     @JavaScriptBody(args = {"id"}, body = "return document.getElementById(id);")
     static native Object findElementById_impl(String id);
 
-    @JavaScriptResource("jquery.typetype.min.js")
     final static class DomNodeWebElement implements WebElement {
 
         private final Object nativeElement;
@@ -260,31 +272,7 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
         @Override
         public void sendKeys(final CharSequence... keysToSend) {
-//            final CountDownLatch cdl = new CountDownLatch(1);
-//            ctx.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    for (CharSequence charSequence : keysToSend) {
-//                        focus_impl(nativeElement);
-//                        setValue_impl(nativeElement, charSequence.toString());
-//                    }
-//                    cdl.countDown();
-//                }
-//            });
-//            try {
-//                cdl.await();
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-            // THIS ALSO DOESN'T UPDATE THE INPUT
 
-            // setValue doesn't work with data-bind textInput
-//            String res = "";
-//            for (CharSequence charSequence : keysToSend) {
-//                res += charSequence.toString();
-//            }
-//            setValue_impl(nativeElement, res);
-//  Robot implementation is not synchronous
             try {
                 final CountDownLatch countDownLatch = new CountDownLatch(1);
                 final String[] result = new String[1];
@@ -579,10 +567,6 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
         @JavaScriptBody(args = {"element"}, body = "element.value=''", wait4js = true)
         static native void clear_impl(Object element);
 
-//        @JavaScriptBody(args = {"target", "c"}, body = "var evt = document.createEvent('KeyboardEvent');\n"
-//                + "evt.initKeyboardEvent('keypress', true, true, null, false, false, false, false, c.charCodeAt(0), 0);"
-//                + "target.dispatchEvent(evt);")
-//        static native void sendKey_impl(Object target, String c);
         @JavaScriptBody(args = {"element", "name"}, body = "return element.getAttribute(name);")
         static native String getAttribute_impl(Object element, String name);
 

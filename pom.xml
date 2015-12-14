@@ -28,6 +28,73 @@
             </plugin>
         </plugins>
     </build>
+    <licenses>
+        <license>
+            <name>gpl_v3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+            <comments>
+                Visit http://dukescript.com for support and commercial license.
+            </comments>
+        </license>
+    </licenses>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>license</id>
+            <activation>
+                <property>
+                    <name>!skipLicenses</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>1.7</version>
+                        <configuration>
+                            <inceptionYear>2015</inceptionYear>
+                            <organizationName>Eppleton IT Consulting</organizationName>
+                            <licenseName>gpl_v3</licenseName>
+                            <failOnMissingHeader>true</failOnMissingHeader>
+                            <descriptionTemplate>src/license/header.txt</descriptionTemplate>
+                            <roots>
+                                <root>src</root>
+                            </roots>  
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check-file-header</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

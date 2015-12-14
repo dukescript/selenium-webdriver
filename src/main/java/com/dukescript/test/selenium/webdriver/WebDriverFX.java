@@ -1,5 +1,28 @@
 package com.dukescript.test.selenium.webdriver;
 
+/*
+ * #%L
+ * WebDriverFX - a file from the "selenium webdriver" project.
+ * Visit http://dukescript.com for support and commercial license.
+ * %%
+ * Copyright (C) 2015 Dukehoff GmbH
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
 import java.awt.AWTException;
 import java.net.URL;
 import java.util.List;
@@ -17,8 +40,32 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
- * A WebDriver you can use to test DukeScriptApplications
+ * A WebDriver you can use to test DukeScriptApplications.
  *
+ * The WebDriver takes care of Threading and BrwsrCtx.
+ * It has some additional methods helpful for initializing a DukeScript Model.
+ * You can load a model like this:
+ * 
+ * <pre>
+ * {@code
+ * private static WebDriverFX driver;
+ * private static TestModel testModel;
+ *
+ * @BeforeClass
+ * public static void test() throws InterruptedException, Exception {
+ *   driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"));
+ *   driver.executeAndWait(new Runnable() {
+ *     @Override
+ *     public void run() {
+ *       testModel = new TestModel("Hello", "World");
+ *       testModel.applyBindings();
+ *     }
+ *   });
+ * }
+ * }
+* </pre>
+* 
+* 
  * @author antonepple
  */
 public final class WebDriverFX implements WebDriver, Executor {
@@ -27,6 +74,11 @@ public final class WebDriverFX implements WebDriver, Executor {
     private DukeScriptBrowser dsBrowser;
     private BrwsrCtx ctx;
 
+    /**
+     * 
+     * @param url The URL of the pafe to be loaded
+     * @throws Exception 
+     */
     public WebDriverFX(final URL url) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
         final Runnable done = new Runnable() {
@@ -49,22 +101,6 @@ public final class WebDriverFX implements WebDriver, Executor {
         });
         init.await();
         dsBrowser.setContext(ctx);
-    }
-
-    public WebDriverFX(final URL url, final Class klass, final String method
-    ) throws Exception {
-        JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    dsBrowser = new DukeScriptBrowser(500, 200);
-                    FXBrowsers.load(dsBrowser.getView(), url, klass, method);
-                } catch (AWTException ex) {
-                    Logger.getLogger(WebDriverFX.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
     }
 
     @Override
@@ -138,6 +174,11 @@ public final class WebDriverFX implements WebDriver, Executor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Executes a Runnable in BrwsrCtx and waits for it to finish.
+     * @param command
+     * @throws InterruptedException 
+     */
     public void executeAndWait(final Runnable command) throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         ctx.execute(new Runnable() {
