@@ -37,7 +37,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javax.swing.KeyStroke;
 import net.java.html.BrwsrCtx;
 import net.java.html.js.JavaScriptBody;
 import org.openqa.selenium.By;

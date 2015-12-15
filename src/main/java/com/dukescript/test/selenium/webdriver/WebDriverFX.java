@@ -22,7 +22,6 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import java.awt.AWTException;
 import java.net.URL;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.web.WebView;
 import net.java.html.BrwsrCtx;
 import net.java.html.boot.fx.FXBrowsers;
 import org.openqa.selenium.By;
@@ -42,10 +42,10 @@ import org.openqa.selenium.WebElement;
 /**
  * A WebDriver you can use to test DukeScriptApplications.
  *
- * The WebDriver takes care of Threading and BrwsrCtx.
- * It has some additional methods helpful for initializing a DukeScript Model.
- * You can load a model like this:
- * 
+ * The WebDriver takes care of Threading and BrwsrCtx. It has some additional
+ * methods helpful for initializing a DukeScript Model. You can load a model
+ * like this:
+ *
  * <pre>
  * {@code
  * private static WebDriverFX driver;
@@ -63,9 +63,9 @@ import org.openqa.selenium.WebElement;
  *   });
  * }
  * }
-* </pre>
-* 
-* 
+ * </pre>
+ *
+ *
  * @author antonepple
  */
 public final class WebDriverFX implements WebDriver, Executor {
@@ -74,10 +74,24 @@ public final class WebDriverFX implements WebDriver, Executor {
     private DukeScriptBrowser dsBrowser;
     private BrwsrCtx ctx;
 
+    public WebDriverFX(WebView view) throws Exception {
+
+        FXBrowsers.runInBrowser(view, new Runnable() {
+            @Override
+            public void run() {
+                ctx = BrwsrCtx.findDefault(WebDriverFX.class);
+                init.countDown();
+            }
+        });
+        init.await();
+        dsBrowser = new DukeScriptBrowser(view);
+        dsBrowser.setContext(ctx);
+    }
+
     /**
-     * 
+     *
      * @param url The URL of the pafe to be loaded
-     * @throws Exception 
+     * @throws Exception
      */
     public WebDriverFX(final URL url, final double width, final double height) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
@@ -102,10 +116,10 @@ public final class WebDriverFX implements WebDriver, Executor {
         init.await();
         dsBrowser.setContext(ctx);
     }
-    
-     public WebDriverFX(final URL url) throws Exception {
-         this(url, 800,600);
-     }
+
+    public WebDriverFX(final URL url) throws Exception {
+        this(url, 800, 600);
+    }
 
     @Override
     public void get(String string) {
@@ -181,8 +195,9 @@ public final class WebDriverFX implements WebDriver, Executor {
 
     /**
      * Executes a Runnable in BrwsrCtx and waits for it to finish.
+     *
      * @param command
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void executeAndWait(final Runnable command) throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
