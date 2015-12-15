@@ -55,33 +55,45 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
-final class DukeScriptBrowser extends Stage implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector {
+final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
-    private WebView view = new WebView();
+    private WebView view;
     private static Robot robot;
     private BrwsrCtx ctx;
+    private Stage stage;
 
     DukeScriptBrowser(double width, double height) throws AWTException {
+        this(new WebView());
         start(width, height);
+    }
+
+    /**
+     * Manages existing WebView
+     *
+     * @param view
+     * @throws AWTException
+     */
+    DukeScriptBrowser(WebView view) throws AWTException {
+        this.view = view;
         robot = new Robot();
     }
 
     public void start(double width, double height) {
-
+        this.stage = new Stage();
         WebEngine engine = view.getEngine();
         ConsoleLogger.register(engine);
         engine.titleProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                DukeScriptBrowser.this.setTitle(newValue);
+                stage.setTitle(newValue);
             }
         });
         StackPane root = new StackPane();
         root.getChildren().add(view);
         Scene scene = new Scene(root, width, height);
-        setScene(scene);
-        show();
+        stage.setScene(scene);
+        stage.show();
     }
 
     public WebView getView() {
@@ -210,6 +222,16 @@ final class DukeScriptBrowser extends Stage implements SearchContext, FindsById,
 
     @JavaScriptBody(args = {"id"}, body = "return document.getElementById(id);")
     static native Object findElementById_impl(String id);
+
+    void close() {
+        if (stage != null) {
+            stage.close();
+        }
+    }
+
+    String getTitle() {
+        return view.getEngine().getTitle();
+    }
 
     final static class DomNodeWebElement implements WebElement {
 
