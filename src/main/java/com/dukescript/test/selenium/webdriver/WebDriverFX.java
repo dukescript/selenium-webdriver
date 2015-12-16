@@ -123,7 +123,7 @@ public final class WebDriverFX implements WebDriver, Executor {
 
     @Override
     public void get(String string) {
-        throw new UnsupportedOperationException("Not implemented as not useful for DukeScript. Use load() instead!");
+        throw new UnsupportedOperationException("Not implemented as not useful for DukeScript.");
     }
 
     @Override
