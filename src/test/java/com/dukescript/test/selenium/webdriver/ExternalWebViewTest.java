@@ -22,6 +22,7 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,19 +86,19 @@ public class ExternalWebViewTest {
     public void withModelAndExistingWebView() throws InterruptedException {
         WebElement element = driver.findElement(By.id("target"));
         Assert.assertEquals("Hello", element.getText());
-//        WebElement button = driver.findElement(By.id("button"));
-//        button.click();
-//        Assert.assertEquals("World", element.getText());
-//        WebElement input = driver.findElement(By.id("input"));
-//        input.clear();
-//        input.sendKeys("DukeScript");
-//        button.click();
-//        Assert.assertEquals("DukeScript", element.getText());
-//        WebElement findElement = driver.findElement(By.cssSelector(".bla"));
-//        Assert.assertNotNull(findElement);
-//        Assert.assertEquals("DukeScript", findElement.getText());
-//        List<WebElement> findElements = driver.findElements(By.cssSelector(".bla"));
-//        Assert.assertEquals(1, findElements.size());
+        WebElement button = driver.findElement(By.id("button"));
+        button.click();
+        Assert.assertEquals("World", element.getText());
+        WebElement input = driver.findElement(By.id("input"));
+        input.clear();
+        input.sendKeys("DukeScript");
+        button.click();
+        Assert.assertEquals("DukeScript", element.getText());
+        WebElement findElement = driver.findElement(By.cssSelector(".bla"));
+        Assert.assertNotNull(findElement);
+        Assert.assertEquals("DukeScript", findElement.getText());
+        List<WebElement> findElements = driver.findElements(By.cssSelector(".bla"));
+        Assert.assertEquals(1, findElements.size());
     }
 
     @AfterClass

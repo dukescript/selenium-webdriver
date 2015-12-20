@@ -217,7 +217,6 @@ public final class WebDriverFX implements WebDriver, Executor {
     }
 
     public static interface RunVal<T> extends Runnable {
-
         public T get();
     }
 }

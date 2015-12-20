@@ -68,6 +68,36 @@ public class SimpleTest {
 //        Assert.assertEquals(1, findElements.size());
     }
 
+    @Test
+    public void findByLinkText() {
+        WebElement element = driver.findElement(By.linkText("Text of link"));
+        Assert.assertEquals("Text of link", element.getText());
+    }
+
+    @Test
+    public void findByPartialLinkText() {
+        WebElement element = driver.findElement(By.partialLinkText("Text"));
+        Assert.assertEquals("Text of link", element.getText());
+    }
+
+    @Test
+    public void findElementsByLinkText() {
+        List<WebElement> findElements = driver.findElements(By.linkText("Text of link"));
+        Assert.assertEquals(1, findElements.size());
+        findElements = driver.findElements(By.linkText("Other link"));
+        Assert.assertEquals(2, findElements.size());
+    }
+
+    @Test
+    public void findElementsByPartialLinkText() {
+        List<WebElement> findElements = driver.findElements(By.partialLinkText("Text"));
+        Assert.assertEquals(2, findElements.size());
+        findElements = driver.findElements(By.partialLinkText("Other link"));
+        Assert.assertEquals(2, findElements.size());
+        findElements = driver.findElements(By.partialLinkText("link"));
+        Assert.assertEquals(4, findElements.size());
+    }
+
     @AfterClass
     public static void close() {
         driver.close();

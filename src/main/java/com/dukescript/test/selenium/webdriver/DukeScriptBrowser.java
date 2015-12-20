@@ -25,6 +25,7 @@ package com.dukescript.test.selenium.webdriver;
 import java.awt.AWTException;
 import java.awt.Robot;
 import static java.awt.event.KeyEvent.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -48,13 +49,14 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByXPath;
 
 /**
  *
  * @author antonepple
  */
-final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector {
+final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
     private WebView view;
@@ -181,6 +183,26 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return new DomNodeWebElement(findElementByCSSSelector_impl(using), ctx);
     }
 
+    @Override
+    public WebElement findElementByLinkText(String using) {
+        return new DomNodeWebElement(findElementByXPath_impl("//a[text()='"+using+"']"), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByLinkText(String using) {
+        return wrap(findElementsByXPath_impl("//a[text()='"+using+"']"));
+    }
+
+    @Override
+    public WebElement findElementByPartialLinkText(String using) {
+        return new DomNodeWebElement(findElementByXPath_impl("//a[contains(text(), '"+using+"')]"), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        return wrap(findElementsByXPath_impl("//a[contains(text(), '"+using+"')]"));
+    }
+
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
         ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
@@ -232,7 +254,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return view.getEngine().getTitle();
     }
 
-    final static class DomNodeWebElement implements WebElement {
+    final static class DomNodeWebElement implements WebElement, Serializable {
 
         private final Object nativeElement;
         private final BrwsrCtx ctx;
