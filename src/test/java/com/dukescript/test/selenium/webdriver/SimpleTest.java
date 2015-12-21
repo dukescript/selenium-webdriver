@@ -69,6 +69,21 @@ public class SimpleTest {
     }
 
     @Test
+    public void findByCSSSelector() {
+        WebElement element = driver.findElement(By.cssSelector(".css-selector"));
+        Assert.assertEquals("blabla", element.getText());
+        WebElement child = driver.findElement(By.cssSelector(".parent .child"));
+        Assert.assertEquals("blubla", child.getText());
+    }
+
+    @Test
+    public void ElementfindByCSSSelector() {
+        WebElement parent = driver.findElement(By.cssSelector(".parent"));
+        WebElement child = parent.findElement(By.cssSelector(".child"));
+        Assert.assertEquals("blubla", child.getText());
+    }
+
+    @Test
     public void findByLinkText() {
         WebElement element = driver.findElement(By.linkText("Text of link"));
         Assert.assertEquals("Text of link", element.getText());
