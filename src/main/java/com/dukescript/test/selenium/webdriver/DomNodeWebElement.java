@@ -41,12 +41,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByXPath;
 
 /**
  *
  * @author antonepple
  */
-final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName, FindsById {
+final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName, FindsById, FindsByXPath {
 
     private final Object nativeElement;
     private final BrwsrCtx ctx;
@@ -765,7 +766,17 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public List<WebElement> findElementsById(String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, "#"+using), ctx);
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, "#" + using), ctx);
+    }
+
+    @Override
+    public WebElement findElementByXPath(String using) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, using), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByXPath(String using) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, using), ctx);
     }
 
 }

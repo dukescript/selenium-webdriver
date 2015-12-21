@@ -2,7 +2,7 @@ package com.dukescript.test.selenium.webdriver;
 
 /*
  * #%L
- * FindByTest - a file from the "selenium webdriver" project.
+ * FindsByTest - a file from the "selenium webdriver" project.
  * Visit http://dukescript.com for support and commercial license.
  * %%
  * Copyright (C) 2015 Dukehoff GmbH
@@ -30,14 +30,14 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class FindByTest {
+public class FindsByTest {
 
     private static WebDriverFX driver;
     private static TestModel testModel;
 
     @BeforeClass
     public static void test() throws InterruptedException, Exception {
-        driver = new WebDriverFX(FindByTest.class.getResource("testWithModel.html"));
+        driver = new WebDriverFX(FindsByTest.class.getResource("testWithModel.html"));
         driver.executeAndWait(new Runnable() {
             @Override
             public void run() {
@@ -159,6 +159,32 @@ public class FindByTest {
         Assert.assertEquals(1, elements.size());
         elements = parent.findElements(By.id("some-id"));
         Assert.assertEquals(2, elements.size());
+    }
+  
+    @Test
+    public void findElementByXPath() {
+        WebElement element = driver.findElement(By.xpath("/html/body/div/div/span"));
+        Assert.assertEquals("xpath", element.getText());
+    }
+
+    @Test
+    public void Element_findElementByXPath() {
+        WebElement parent = driver.findElement(By.id("parent-id"));
+        WebElement child = parent.findElement(By.xpath("div/span"));
+        Assert.assertEquals("xpath", child.getText());
+    }
+
+    @Test
+    public void findElementsByXPath() {
+        List<WebElement> elements = driver.findElements(By.xpath("//div"));
+        Assert.assertEquals(6, elements.size());       
+    }
+
+    @Test
+    public void Element_findElementsByXPath() {
+        WebElement parent = driver.findElement(By.id("parent-id"));
+        List<WebElement> elements = parent.findElements(By.xpath("div"));
+        Assert.assertEquals(2, elements.size());       
     }
 
     @Test
