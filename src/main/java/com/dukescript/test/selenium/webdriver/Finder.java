@@ -55,9 +55,6 @@ public class Finder {
             + "return arr;")
     static native Object[] findElementsByCSSSelector_impl(Object element, String using);
 
-    @JavaScriptBody(args = {"element", "id"}, body = "return element.getElementById(id);")
-    static native Object findElementById_impl(Object element, String id);
-
     @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.getElementsByClassName(using);\n"
             + "return nodeList[0];")
     static native Object findElementByClassName_impl(Object element, String using);

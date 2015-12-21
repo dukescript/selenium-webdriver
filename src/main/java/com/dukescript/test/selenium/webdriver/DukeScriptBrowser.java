@@ -155,12 +155,12 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementById(String using) {
-        return new DomNodeWebElement(Finder.findElementById_impl(document, using), ctx);
+        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(document, "#" + using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsById(String using) {
-        throw new UnsupportedOperationException("Not supported yet");
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, "#"+using), ctx);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.dukescript.test.selenium.webdriver;
 
 /*
  * #%L
- * SimpleTest - a file from the "selenium webdriver" project.
+ * FindByTest - a file from the "selenium webdriver" project.
  * Visit http://dukescript.com for support and commercial license.
  * %%
  * Copyright (C) 2015 Dukehoff GmbH
@@ -30,14 +30,14 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class SimpleTest {
+public class FindByTest {
 
     private static WebDriverFX driver;
     private static TestModel testModel;
 
     @BeforeClass
     public static void test() throws InterruptedException, Exception {
-        driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"));
+        driver = new WebDriverFX(FindByTest.class.getResource("testWithModel.html"));
         driver.executeAndWait(new Runnable() {
             @Override
             public void run() {
@@ -128,6 +128,36 @@ public class SimpleTest {
         List<WebElement> elements = parent.findElements(By.className("child"));
         Assert.assertEquals(1, elements.size());
         elements = parent.findElements(By.className("some"));
+        Assert.assertEquals(2, elements.size());
+    }
+    
+        @Test
+    public void findElementById() {
+        WebElement element = driver.findElement(By.id("my-id"));
+        Assert.assertEquals("blabla", element.getText());
+    }
+
+    @Test
+    public void Element_findElementById() {
+        WebElement parent = driver.findElement(By.id("parent-id"));
+        WebElement child = parent.findElement(By.id("child-id"));
+        Assert.assertEquals("blubla", child.getText());
+    }
+
+    @Test
+    public void findElementsById() {
+        List<WebElement> elements = driver.findElements(By.id("my-id"));
+        Assert.assertEquals(1, elements.size());
+        elements = driver.findElements(By.id("some-id"));
+        Assert.assertEquals(3, elements.size());
+    }
+
+    @Test
+    public void Element_findElementsById() {
+        WebElement parent = driver.findElement(By.id("parent-id"));
+        List<WebElement> elements = parent.findElements(By.id("child-id"));
+        Assert.assertEquals(1, elements.size());
+        elements = parent.findElements(By.id("some-id"));
         Assert.assertEquals(2, elements.size());
     }
 
