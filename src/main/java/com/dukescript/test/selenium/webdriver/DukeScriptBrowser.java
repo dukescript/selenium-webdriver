@@ -23,9 +23,6 @@ package com.dukescript.test.selenium.webdriver;
  * #L%
  */
 import java.awt.AWTException;
-import java.awt.Robot;
-import static java.awt.event.KeyEvent.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -39,14 +36,11 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.java.html.BrwsrCtx;
+import net.java.html.boot.fx.FXBrowsers;
 import net.java.html.js.JavaScriptBody;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -66,11 +60,12 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         FindsByName, FindsByTagName, Locatable {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
+    
     private WebView view;
-
     private BrwsrCtx ctx;
     private Stage stage;
-
+    private Object document;
+    
     DukeScriptBrowser(double width, double height) throws AWTException {
         this(new WebView());
         start(width, height);
@@ -161,7 +156,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementById(String using) {
-        return new DomNodeWebElement(findElementById_impl(using), ctx);
+        return new DomNodeWebElement(Finder.findElementById_impl(document, using), ctx);
     }
 
     @Override
@@ -171,42 +166,42 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementByXPath(final String using) {
-        return new DomNodeWebElement(findElementByXPath_impl(using), ctx);
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByXPath(final String using) {
-        return wrap(findElementsByXPath_impl(using));
+        return wrap(Finder.findElementsByXPath_impl(document,using));
     }
 
     @Override
     public List<WebElement> findElementsByCssSelector(final String using) {
-        return wrap(findElementsByCSSSelector_impl(using));
+        return wrap(Finder.findElementsByCSSSelector_impl(document, using));
     }
 
     @Override
     public WebElement findElementByCssSelector(final String using) {
-        return new DomNodeWebElement(findElementByCSSSelector_impl(using), ctx);
+        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(document, using), ctx);
     }
 
     @Override
     public WebElement findElementByLinkText(String using) {
-        return new DomNodeWebElement(findElementByXPath_impl("//a[text()='" + using + "']"), ctx);
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(document,"//a[text()='" + using + "']"), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByLinkText(String using) {
-        return wrap(findElementsByXPath_impl("//a[text()='" + using + "']"));
+        return wrap(Finder.findElementsByXPath_impl(document,"//a[text()='" + using + "']"));
     }
 
     @Override
     public WebElement findElementByPartialLinkText(String using) {
-        return new DomNodeWebElement(findElementByXPath_impl("//a[contains(text(), '" + using + "')]"), ctx);
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(document,"//a[contains(text(), '" + using + "')]"), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        return wrap(findElementsByXPath_impl("//a[contains(text(), '" + using + "')]"));
+        return wrap(Finder.findElementsByXPath_impl(document,"//a[contains(text(), '" + using + "')]"));
     }
     
         void close() {
@@ -231,12 +226,12 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementByClassName(String using) {
-        return new DomNodeWebElement(findElementByClassName_impl(using), ctx);
+        return new DomNodeWebElement(Finder.findElementByClassName_impl(document, using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByClassName(String using) {
-        return wrap(findElementsByClassName_impl(using));
+        return wrap(Finder.findElementsByClassName_impl(document, using));
     }
 
     @Override
@@ -273,48 +268,21 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     }
 
     void setContext(BrwsrCtx ctx) {
-        this.ctx = ctx;
+        try {
+            this.ctx = ctx;
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            FXBrowsers.runInBrowser(view, new Runnable() {
+                @Override
+                public void run() {
+                    document = Finder.getDocument();
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    @JavaScriptBody(args = {"using"}, body = "return document.evaluate(using, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;")
-    static native Object findElementByXPath_impl(String using);
-
-    @JavaScriptBody(args = {"using"}, body = "var xpr =  document.evaluate(using, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);\n"
-            + "var arr = [];\n"
-            + "var current = xpr.iterateNext();\n"
-            + "while (current){\n"
-            + "    arr.push(current);\n"
-            + "    current = xpr.iterateNext();\n"
-            + "}"
-            + "return arr;")
-    static native Object[] findElementsByXPath_impl(String using);
-
-    @JavaScriptBody(args = {"using"}, body = "return document.querySelector(using);\n")
-    static native Object findElementByCSSSelector_impl(String using);
-
-    @JavaScriptBody(args = {"using"}, body = "var nodeList = document.querySelectorAll(using);\n"
-            + "var arr = [];\n"
-            + "for (var i = 0; i < nodeList.length; i++) {\n"
-            + "    console.log('node '+nodeList[i]);\n"
-            + "    arr.push(nodeList[i]);\n"
-            + "};"
-            + "return arr;")
-    static native Object[] findElementsByCSSSelector_impl(String using);
-
-    @JavaScriptBody(args = {"id"}, body = "return document.getElementById(id);")
-    static native Object findElementById_impl(String id);
-
-    @JavaScriptBody(args = {"using"}, body = "var nodeList = document.getElementsByClassName(using);\n"
-            + "return nodelist[0];")
-    static native Object findElementByClassName_impl(String using);
-
-    @JavaScriptBody(args = {"using"}, body = "var nodeList = document.getElementsByClassName(using);\n"
-            + "var arr = [];\n"
-            + "for (var i = 0; i < nodeList.length; i++) {\n"
-            + "    console.log('node '+nodeList[i]);\n"
-            + "    arr.push(nodeList[i]);\n"
-            + "};"
-            + "return arr;")
-    static native Object[] findElementsByClassName_impl(String using);
 
 }
