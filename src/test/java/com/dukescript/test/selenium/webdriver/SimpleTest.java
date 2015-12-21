@@ -69,18 +69,36 @@ public class SimpleTest {
     }
 
     @Test
-    public void findByCSSSelector() {
+    public void findElementByCSSSelector() {
         WebElement element = driver.findElement(By.cssSelector(".css-selector"));
         Assert.assertEquals("blabla", element.getText());
         WebElement child = driver.findElement(By.cssSelector(".parent .child"));
         Assert.assertEquals("blubla", child.getText());
+
     }
 
     @Test
-    public void ElementfindByCSSSelector() {
+    public void Element_findElementByCSSSelector() {
         WebElement parent = driver.findElement(By.cssSelector(".parent"));
         WebElement child = parent.findElement(By.cssSelector(".child"));
         Assert.assertEquals("blubla", child.getText());
+    }
+
+    @Test
+    public void findElementsByCSSSelector() {
+        List<WebElement> elements = driver.findElements(By.cssSelector(".css-selector"));
+        Assert.assertEquals(1, elements.size());
+        elements = driver.findElements(By.cssSelector(".some"));
+        Assert.assertEquals(3, elements.size());
+    }
+
+    @Test
+    public void Element_findElementsByCSSSelector() {
+        WebElement parent = driver.findElement(By.cssSelector(".parent"));
+        List<WebElement> elements = parent.findElements(By.cssSelector(".child"));
+        Assert.assertEquals(1, elements.size());
+        elements = parent.findElements(By.cssSelector(".some"));
+        Assert.assertEquals(2, elements.size());
     }
 
     @Test
