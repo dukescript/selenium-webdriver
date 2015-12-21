@@ -96,7 +96,7 @@ public class FindsByTest {
     public void Element_findElementsByCSSSelector() {
         WebElement parent = driver.findElement(By.cssSelector(".parent"));
         List<WebElement> elements = parent.findElements(By.cssSelector(".child"));
-        Assert.assertEquals(1, elements.size());
+        Assert.assertEquals(2, elements.size());
         elements = parent.findElements(By.cssSelector(".some"));
         Assert.assertEquals(2, elements.size());
     }
@@ -126,7 +126,7 @@ public class FindsByTest {
     public void Element_findElementsByClassName() {
         WebElement parent = driver.findElement(By.className("parent"));
         List<WebElement> elements = parent.findElements(By.className("child"));
-        Assert.assertEquals(1, elements.size());
+        Assert.assertEquals(2, elements.size());
         elements = parent.findElements(By.className("some"));
         Assert.assertEquals(2, elements.size());
     }
@@ -156,7 +156,7 @@ public class FindsByTest {
     public void Element_findElementsById() {
         WebElement parent = driver.findElement(By.id("parent-id"));
         List<WebElement> elements = parent.findElements(By.id("child-id"));
-        Assert.assertEquals(1, elements.size());
+        Assert.assertEquals(2, elements.size());
         elements = parent.findElements(By.id("some-id"));
         Assert.assertEquals(2, elements.size());
     }
