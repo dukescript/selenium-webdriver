@@ -40,12 +40,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.internal.FindsById;
 
 /**
  *
  * @author antonepple
  */
-final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName {
+final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName, FindsById {
 
     private final Object nativeElement;
     private final BrwsrCtx ctx;
@@ -755,6 +756,16 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
     @Override
     public List<WebElement> findElementsByClassName(String using) {
         return Finder.wrap(Finder.findElementsByClassName_impl(nativeElement, using), ctx);
+    }
+
+    @Override
+    public WebElement findElementById(String using) {
+        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, "#" + using), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsById(String using) {
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, "#"+using), ctx);
     }
 
 }

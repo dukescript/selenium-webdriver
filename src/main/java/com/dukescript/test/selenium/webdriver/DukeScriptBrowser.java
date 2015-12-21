@@ -37,7 +37,6 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.java.html.BrwsrCtx;
 import net.java.html.boot.fx.FXBrowsers;
-import net.java.html.js.JavaScriptBody;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
