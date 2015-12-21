@@ -55,6 +55,19 @@ public class Finder {
             + "return arr;")
     static native Object[] findElementsByCSSSelector_impl(Object element, String using);
 
+    @JavaScriptBody(args = {"element", "using"}, body
+            =  "return element.querySelector('*[name='+using+']');\n")
+    static native Object findElementByName_impl(Object element, String using);
+
+    @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.querySelectorAll('*[name='+using+']');\n"
+            + "var arr = [];\n"
+            + "for (var i = 0; i < nodeList.length; i++) {\n"
+            + "    console.log('node '+nodeList[i]);\n"
+            + "    arr.push(nodeList[i]);\n"
+            + "};"
+            + "return arr;")
+    static native Object[] findElementsByName_impl(Object element, String using);
+
     @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.getElementsByClassName(using);\n"
             + "return nodeList[0];")
     static native Object findElementByClassName_impl(Object element, String using);
@@ -67,12 +80,11 @@ public class Finder {
             + "};"
             + "return arr;")
     static native Object[] findElementsByClassName_impl(Object element, String using);
-    
-    
-    @JavaScriptBody(args = { "element", "using" }, body = "return document.evaluate(using, element, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;")
-    static native Object findElementByXPath_impl(Object element,String using);
 
-    @JavaScriptBody(args = { "element", "using" }, body = "var xpr =  document.evaluate(using, element, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);\n"
+    @JavaScriptBody(args = {"element", "using"}, body = "return document.evaluate(using, element, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;")
+    static native Object findElementByXPath_impl(Object element, String using);
+
+    @JavaScriptBody(args = {"element", "using"}, body = "var xpr =  document.evaluate(using, element, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);\n"
             + "var arr = [];\n"
             + "var current = xpr.iterateNext();\n"
             + "while (current){\n"

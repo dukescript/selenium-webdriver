@@ -160,7 +160,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsById(String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, "#"+using), ctx);
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, "#" + using), ctx);
     }
 
     @Override
@@ -175,7 +175,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByCssSelector(final String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, using),ctx);
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, using), ctx);
     }
 
     @Override
@@ -190,7 +190,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"),ctx);
+        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"), ctx);
     }
 
     @Override
@@ -200,7 +200,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"),ctx);
+        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"), ctx);
     }
 
     void close() {
@@ -230,17 +230,17 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByClassName(String using) {
-        return Finder.wrap(Finder.findElementsByClassName_impl(document, using),ctx);
+        return Finder.wrap(Finder.findElementsByClassName_impl(document, using), ctx);
     }
 
     @Override
     public WebElement findElementByName(String using) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DomNodeWebElement(Finder.findElementByName_impl(document, using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByName(String using) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Finder.wrap(Finder.findElementsByName_impl(document, using), ctx);
     }
 
     @Override

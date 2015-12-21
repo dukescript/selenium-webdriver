@@ -69,6 +69,12 @@ public class FindsByTest {
     }
 
     @Test
+    public void Element_tagName() {
+        WebElement element = driver.findElement(By.id("input"));
+        Assert.assertEquals("INPUT", element.getTagName());
+    }
+
+    @Test
     public void findElementByCSSSelector() {
         WebElement element = driver.findElement(By.cssSelector(".css-selector"));
         Assert.assertEquals("blabla", element.getText());
@@ -249,6 +255,32 @@ public class FindsByTest {
         Assert.assertEquals(2, findElements.size());
         findElements = links.findElements(By.partialLinkText("link"));
         Assert.assertEquals(4, findElements.size());
+    }
+
+    @Test
+    public void findElementByName() {
+        WebElement element = driver.findElement(By.name("text"));
+        Assert.assertEquals("INPUT", element.getTagName());
+    }
+
+    @Test
+    public void Element_findElementByName() {
+        WebElement parent = driver.findElement(By.id("form"));
+        WebElement element = parent.findElement(By.name("text"));
+        Assert.assertEquals("INPUT", element.getTagName());
+    }
+
+    @Test
+    public void findElementsByName() {
+        List<WebElement> found = driver.findElements(By.name("text"));
+        Assert.assertEquals(1, found.size());
+    }
+
+    @Test
+    public void Element_findElementsByName() {
+        WebElement parent = driver.findElement(By.id("form"));
+        List<WebElement> found = parent.findElements(By.name("text"));
+        Assert.assertEquals(1, found.size());     
     }
 
     @AfterClass
