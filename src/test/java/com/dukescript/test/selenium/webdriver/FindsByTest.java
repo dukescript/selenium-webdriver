@@ -130,8 +130,8 @@ public class FindsByTest {
         elements = parent.findElements(By.className("some"));
         Assert.assertEquals(2, elements.size());
     }
-    
-        @Test
+
+    @Test
     public void findElementById() {
         WebElement element = driver.findElement(By.id("my-id"));
         Assert.assertEquals("blabla", element.getText());
@@ -160,7 +160,7 @@ public class FindsByTest {
         elements = parent.findElements(By.id("some-id"));
         Assert.assertEquals(2, elements.size());
     }
-  
+
     @Test
     public void findElementByXPath() {
         WebElement element = driver.findElement(By.xpath("/html/body/div/div/span"));
@@ -177,14 +177,14 @@ public class FindsByTest {
     @Test
     public void findElementsByXPath() {
         List<WebElement> elements = driver.findElements(By.xpath("//div"));
-        Assert.assertEquals(6, elements.size());       
+        Assert.assertEquals(6, elements.size());
     }
 
     @Test
     public void Element_findElementsByXPath() {
         WebElement parent = driver.findElement(By.id("parent-id"));
         List<WebElement> elements = parent.findElements(By.xpath("div"));
-        Assert.assertEquals(2, elements.size());       
+        Assert.assertEquals(2, elements.size());
     }
 
     @Test
@@ -214,6 +214,40 @@ public class FindsByTest {
         findElements = driver.findElements(By.partialLinkText("Other link"));
         Assert.assertEquals(2, findElements.size());
         findElements = driver.findElements(By.partialLinkText("link"));
+        Assert.assertEquals(4, findElements.size());
+    }
+
+    @Test
+    public void Element_findByLinkText() {
+        WebElement links = driver.findElement(By.id("links"));
+        WebElement element = links.findElement(By.linkText("Text of link"));
+        Assert.assertEquals("Text of link", element.getText());
+    }
+
+    @Test
+    public void Element_findByPartialLinkText() {
+        WebElement links = driver.findElement(By.id("links"));
+        WebElement element = links.findElement(By.partialLinkText("Text"));
+        Assert.assertEquals("Text of link", element.getText());
+    }
+
+    @Test
+    public void Element_findElementsByLinkText() {
+        WebElement links = driver.findElement(By.id("links"));
+        List<WebElement> findElements = links.findElements(By.linkText("Text of link"));
+        Assert.assertEquals(1, findElements.size());
+        findElements = links.findElements(By.linkText("Other link"));
+        Assert.assertEquals(2, findElements.size());
+    }
+
+    @Test
+    public void Element_findElementsByPartialLinkText() {
+        WebElement links = driver.findElement(By.id("links"));
+        List<WebElement> findElements = links.findElements(By.partialLinkText("Text"));
+        Assert.assertEquals(2, findElements.size());
+        findElements = links.findElements(By.partialLinkText("Other link"));
+        Assert.assertEquals(2, findElements.size());
+        findElements = links.findElements(By.partialLinkText("link"));
         Assert.assertEquals(4, findElements.size());
     }
 

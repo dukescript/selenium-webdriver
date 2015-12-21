@@ -41,13 +41,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByXPath;
 
 /**
  *
  * @author antonepple
  */
-final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName, FindsById, FindsByXPath {
+final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName, FindsById, FindsByXPath, FindsByLinkText {
 
     private final Object nativeElement;
     private final BrwsrCtx ctx;
@@ -777,6 +778,26 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
     @Override
     public List<WebElement> findElementsByXPath(String using) {
         return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, using), ctx);
+    }
+
+      @Override
+    public WebElement findElementByLinkText(String using) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[text()='" + using + "']"), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByLinkText(String using) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[text()='" + using + "']"),ctx);
+    }
+
+    @Override
+    public WebElement findElementByPartialLinkText(String using) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"),ctx);
     }
 
 }

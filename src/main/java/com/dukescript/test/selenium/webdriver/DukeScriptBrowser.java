@@ -175,7 +175,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByCssSelector(final String using) {
-        return wrap(Finder.findElementsByCSSSelector_impl(document, using));
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, using),ctx);
     }
 
     @Override
@@ -190,7 +190,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByLinkText(String using) {
-        return wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"));
+        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"),ctx);
     }
 
     @Override
@@ -200,7 +200,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        return wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"));
+        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"),ctx);
     }
 
     void close() {
@@ -230,7 +230,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByClassName(String using) {
-        return wrap(Finder.findElementsByClassName_impl(document, using));
+        return Finder.wrap(Finder.findElementsByClassName_impl(document, using),ctx);
     }
 
     @Override
@@ -256,14 +256,6 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     @Override
     public Coordinates getCoordinates() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
-        ArrayList<WebElement> arrayList = new ArrayList<>();
-        for (Object object : findElementsByXPath_impl) {
-            arrayList.add(new DomNodeWebElement(object, ctx));
-        }
-        return arrayList;
     }
 
     void setContext(BrwsrCtx ctx) {
