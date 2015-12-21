@@ -102,6 +102,36 @@ public class SimpleTest {
     }
 
     @Test
+    public void findElementByClassName() {
+        WebElement element = driver.findElement(By.className("css-selector"));
+        Assert.assertEquals("blabla", element.getText());
+    }
+
+    @Test
+    public void Element_findElementByClassName() {
+        WebElement parent = driver.findElement(By.className("parent"));
+        WebElement child = parent.findElement(By.className("child"));
+        Assert.assertEquals("blubla", child.getText());
+    }
+
+    @Test
+    public void findElementsByClassName() {
+        List<WebElement> elements = driver.findElements(By.className("css-selector"));
+        Assert.assertEquals(1, elements.size());
+        elements = driver.findElements(By.className("some"));
+        Assert.assertEquals(3, elements.size());
+    }
+
+    @Test
+    public void Element_findElementsByClassName() {
+        WebElement parent = driver.findElement(By.className("parent"));
+        List<WebElement> elements = parent.findElements(By.className("child"));
+        Assert.assertEquals(1, elements.size());
+        elements = parent.findElements(By.className("some"));
+        Assert.assertEquals(2, elements.size());
+    }
+
+    @Test
     public void findByLinkText() {
         WebElement element = driver.findElement(By.linkText("Text of link"));
         Assert.assertEquals("Text of link", element.getText());

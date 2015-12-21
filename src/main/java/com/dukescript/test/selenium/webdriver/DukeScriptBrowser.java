@@ -60,12 +60,12 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         FindsByName, FindsByTagName, Locatable {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
-    
+
     private WebView view;
     private BrwsrCtx ctx;
     private Stage stage;
     private Object document;
-    
+
     DukeScriptBrowser(double width, double height) throws AWTException {
         this(new WebView());
         start(width, height);
@@ -171,7 +171,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public List<WebElement> findElementsByXPath(final String using) {
-        return wrap(Finder.findElementsByXPath_impl(document,using));
+        return wrap(Finder.findElementsByXPath_impl(document, using));
     }
 
     @Override
@@ -186,25 +186,25 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementByLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(document,"//a[text()='" + using + "']"), ctx);
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, "//a[text()='" + using + "']"), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByLinkText(String using) {
-        return wrap(Finder.findElementsByXPath_impl(document,"//a[text()='" + using + "']"));
+        return wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"));
     }
 
     @Override
     public WebElement findElementByPartialLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(document,"//a[contains(text(), '" + using + "')]"), ctx);
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, "//a[contains(text(), '" + using + "')]"), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        return wrap(Finder.findElementsByXPath_impl(document,"//a[contains(text(), '" + using + "')]"));
+        return wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"));
     }
-    
-        void close() {
+
+    void close() {
         if (stage != null) {
             stage.close();
         }
@@ -258,7 +258,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     public Coordinates getCoordinates() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     private List<WebElement> wrap(Object[] findElementsByXPath_impl) {
         ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
@@ -283,6 +283,5 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
             Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
 }

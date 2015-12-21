@@ -38,13 +38,14 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 
 /**
  *
  * @author antonepple
  */
-final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector {
+final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSelector, FindsByClassName {
 
     private final Object nativeElement;
     private final BrwsrCtx ctx;
@@ -243,7 +244,7 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public List<WebElement> findElements(final By by) {
-          try {
+        try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             WebDriverFX.RunVal<List<WebElement>> runVal = new WebDriverFX.RunVal<List<WebElement>>() {
                 List<WebElement> result;
@@ -270,7 +271,7 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public WebElement findElement(final By by) {
-          try {
+        try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final WebElement[] result = new WebElement[1];
             ctx.execute(new Runnable() {
@@ -744,6 +745,16 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
     @Override
     public List<WebElement> findElementsByCssSelector(String using) {
         return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, using), ctx);
+    }
+
+    @Override
+    public WebElement findElementByClassName(String using) {
+        return new DomNodeWebElement(Finder.findElementByClassName_impl(nativeElement, using), ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByClassName(String using) {
+        return Finder.wrap(Finder.findElementsByClassName_impl(nativeElement, using), ctx);
     }
 
 }
