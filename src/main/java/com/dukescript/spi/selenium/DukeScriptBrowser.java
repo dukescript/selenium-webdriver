@@ -1,4 +1,4 @@
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.spi.selenium;
 
 /*
  * #%L
@@ -22,6 +22,7 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+import com.dukescript.api.selenium.WebDriverFX;
 import java.awt.AWTException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -51,9 +52,8 @@ import org.openqa.selenium.internal.FindsByXPath;
  *
  * @author antonepple
  */
-final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText, FindsByClassName,
-        FindsByName, FindsByTagName 
-//        , JavascriptExecutor, Locatable
+public final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText, FindsByClassName,
+        FindsByName, FindsByTagName //        , JavascriptExecutor, Locatable
 {
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
@@ -63,7 +63,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     private Stage stage;
     private Object document;
 
-    DukeScriptBrowser(double width, double height) throws AWTException {
+    public DukeScriptBrowser(double width, double height) throws AWTException {
         this(new WebView());
         start(width, height);
     }
@@ -74,7 +74,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
      * @param view
      * @throws AWTException
      */
-    DukeScriptBrowser(WebView view) throws AWTException {
+    public DukeScriptBrowser(WebView view) throws AWTException {
         this.view = view;
     }
 
@@ -99,7 +99,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return view;
     }
 
-    String getPageSource() {
+    public String getPageSource() {
         return view.getEngine().getLocation();
     }
 
@@ -150,16 +150,17 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         }
         return null;
     }
-    
-     void close() {
+
+    public void close() {
         if (stage != null) {
             stage.close();
         }
     }
 
-    String getTitle() {
+    public String getTitle() {
         return view.getEngine().getTitle();
     }
+
     @Override
     public WebElement findElementByCssSelector(String using) {
         return Finder.findElementByCssSelector(document, using, ctx);
@@ -200,7 +201,7 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return Finder.findElementsByXPath(document, using, ctx);
     }
 
-      @Override
+    @Override
     public WebElement findElementByLinkText(String using) {
         return Finder.findElementByLinkText(document, using, ctx);
     }
@@ -220,7 +221,6 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return Finder.findElementsByPartialLinkText(document, using, ctx);
     }
 
-    
     @Override
     public WebElement findElementByName(String using) {
         return Finder.findElementByName(document, using, ctx);
@@ -240,7 +240,8 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     public List<WebElement> findElementsByTagName(String using) {
         return Finder.findElementsByTagName(document, using, ctx);
     }
-    void setContext(BrwsrCtx ctx) {
+
+    public void setContext(BrwsrCtx ctx) {
         try {
             this.ctx = ctx;
             final CountDownLatch countDownLatch = new CountDownLatch(1);

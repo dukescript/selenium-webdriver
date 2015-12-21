@@ -1,4 +1,4 @@
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.spi.selenium;
 /*
  * #%L
  * DukeScriptScriptBrowser - a file from the "selenium webdriver" project.

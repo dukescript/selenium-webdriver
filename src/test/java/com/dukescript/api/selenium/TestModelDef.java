@@ -1,4 +1,4 @@
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.api.selenium;
 
 /*
  * #%L

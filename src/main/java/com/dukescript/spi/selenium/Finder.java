@@ -20,7 +20,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.spi.selenium;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
  *
  * @author antonepple
  */
-public class Finder {
+final class Finder {
 
     public static WebElement findElementByCssSelector(Object nativeElement, String using, BrwsrCtx ctx) {
         return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, using), ctx);

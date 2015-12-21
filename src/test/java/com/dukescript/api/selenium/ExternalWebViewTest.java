@@ -1,4 +1,4 @@
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.api.selenium;
 
 /*
  * #%L
@@ -22,6 +22,7 @@ package com.dukescript.test.selenium.webdriver;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;

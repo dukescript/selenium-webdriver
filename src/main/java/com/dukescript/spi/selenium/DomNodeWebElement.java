@@ -20,8 +20,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.dukescript.test.selenium.webdriver;
+package com.dukescript.spi.selenium;
 
+import com.dukescript.api.selenium.WebDriverFX;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
