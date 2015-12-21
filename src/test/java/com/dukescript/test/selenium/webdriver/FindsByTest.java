@@ -308,7 +308,7 @@ public class FindsByTest {
         List<WebElement> found = parent.findElements(By.tagName("input"));
         Assert.assertEquals(2, found.size());     
     }
-
+    
     @AfterClass
     public static void close() {
         driver.close();
