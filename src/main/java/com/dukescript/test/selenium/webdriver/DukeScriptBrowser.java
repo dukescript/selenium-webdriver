@@ -54,8 +54,10 @@ import org.openqa.selenium.internal.Locatable;
  *
  * @author antonepple
  */
-final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText, JavascriptExecutor, FindsByClassName,
-        FindsByName, FindsByTagName, Locatable {
+final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText, FindsByClassName,
+        FindsByName, FindsByTagName 
+//        , JavascriptExecutor, Locatable
+{
 
     static Logger LOGGER = Logger.getLogger(DukeScriptBrowser.class.getName());
 
@@ -212,15 +214,6 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         return view.getEngine().getTitle();
     }
 
-    @Override
-    public Object executeScript(String script, Object... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object executeAsyncScript(String script, Object... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public WebElement findElementByClassName(String using) {
@@ -250,11 +243,6 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     @Override
     public List<WebElement> findElementsByTagName(String using) {
         return Finder.wrap(Finder.findElementsByTagName_impl(document, using), ctx);
-    }
-
-    @Override
-    public Coordinates getCoordinates() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     void setContext(BrwsrCtx ctx) {
