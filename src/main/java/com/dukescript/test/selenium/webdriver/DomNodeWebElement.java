@@ -745,83 +745,83 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public WebElement findElementByCssSelector(String using) {
-        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, using), ctx);
+        return Finder.findElementByCssSelector(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByCssSelector(String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, using), ctx);
+        return Finder.findElementsByCssSelector(nativeElement, using, ctx);
     }
 
     @Override
     public WebElement findElementByClassName(String using) {
-        return new DomNodeWebElement(Finder.findElementByClassName_impl(nativeElement, using), ctx);
+        return Finder.findElementByClassName(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByClassName(String using) {
-        return Finder.wrap(Finder.findElementsByClassName_impl(nativeElement, using), ctx);
+        return Finder.findElementsByClassName(nativeElement, using, ctx);
     }
 
     @Override
     public WebElement findElementById(String using) {
-        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, "#" + using), ctx);
+        return Finder.findElementById(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsById(String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, "#" + using), ctx);
+        return Finder.findElementsById(nativeElement, using, ctx);
     }
 
     @Override
     public WebElement findElementByXPath(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, using), ctx);
+        return Finder.findElementByXPath(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByXPath(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, using), ctx);
+        return Finder.findElementsByXPath(nativeElement, using, ctx);
     }
 
       @Override
     public WebElement findElementByLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[text()='" + using + "']"), ctx);
+        return Finder.findElementByLinkText(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[text()='" + using + "']"),ctx);
+        return Finder.findElementsByLinkText(nativeElement, using, ctx);
     }
 
     @Override
     public WebElement findElementByPartialLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"), ctx);
+        return Finder.findElementByPartialLinkText(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"),ctx);
+        return Finder.findElementsByPartialLinkText(nativeElement, using, ctx);
     }
 
     
     @Override
     public WebElement findElementByName(String using) {
-        return new DomNodeWebElement(Finder.findElementByName_impl(nativeElement, using), ctx);
+        return Finder.findElementByName(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByName(String using) {
-        return Finder.wrap(Finder.findElementsByName_impl(nativeElement, using), ctx);
+        return Finder.findElementsByName(nativeElement, using, ctx);
     }
 
     @Override
     public WebElement findElementByTagName(String using) {
-        return new DomNodeWebElement(Finder.findElementByTagName_impl(nativeElement, using), ctx);
+        return Finder.findElementByTagName(nativeElement, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByTagName(String using) {
-        return Finder.wrap(Finder.findElementsByTagName_impl(nativeElement, using), ctx);
+        return Finder.findElementsByTagName(nativeElement, using, ctx);
     }
 
 }

@@ -150,58 +150,8 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
         }
         return null;
     }
-
-    @Override
-    public WebElement findElementById(String using) {
-        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(document, "#" + using), ctx);
-    }
-
-    @Override
-    public List<WebElement> findElementsById(String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, "#" + using), ctx);
-    }
-
-    @Override
-    public WebElement findElementByXPath(final String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, using), ctx);
-    }
-
-    @Override
-    public List<WebElement> findElementsByXPath(final String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(document, using), ctx);
-    }
-
-    @Override
-    public List<WebElement> findElementsByCssSelector(final String using) {
-        return Finder.wrap(Finder.findElementsByCSSSelector_impl(document, using), ctx);
-    }
-
-    @Override
-    public WebElement findElementByCssSelector(final String using) {
-        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(document, using), ctx);
-    }
-
-    @Override
-    public WebElement findElementByLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, "//a[text()='" + using + "']"), ctx);
-    }
-
-    @Override
-    public List<WebElement> findElementsByLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[text()='" + using + "']"), ctx);
-    }
-
-    @Override
-    public WebElement findElementByPartialLinkText(String using) {
-        return new DomNodeWebElement(Finder.findElementByXPath_impl(document, "//a[contains(text(), '" + using + "')]"), ctx);
-    }
-
-    @Override
-    public List<WebElement> findElementsByPartialLinkText(String using) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(document, "//a[contains(text(), '" + using + "')]"), ctx);
-    }
-
-    void close() {
+    
+     void close() {
         if (stage != null) {
             stage.close();
         }
@@ -210,38 +160,86 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
     String getTitle() {
         return view.getEngine().getTitle();
     }
+    @Override
+    public WebElement findElementByCssSelector(String using) {
+        return Finder.findElementByCssSelector(document, using, ctx);
+    }
 
+    @Override
+    public List<WebElement> findElementsByCssSelector(String using) {
+        return Finder.findElementsByCssSelector(document, using, ctx);
+    }
 
     @Override
     public WebElement findElementByClassName(String using) {
-        return new DomNodeWebElement(Finder.findElementByClassName_impl(document, using), ctx);
+        return Finder.findElementByClassName(document, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByClassName(String using) {
-        return Finder.wrap(Finder.findElementsByClassName_impl(document, using), ctx);
+        return Finder.findElementsByClassName(document, using, ctx);
     }
 
     @Override
+    public WebElement findElementById(String using) {
+        return Finder.findElementById(document, using, ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsById(String using) {
+        return Finder.findElementsById(document, using, ctx);
+    }
+
+    @Override
+    public WebElement findElementByXPath(String using) {
+        return Finder.findElementByXPath(document, using, ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByXPath(String using) {
+        return Finder.findElementsByXPath(document, using, ctx);
+    }
+
+      @Override
+    public WebElement findElementByLinkText(String using) {
+        return Finder.findElementByLinkText(document, using, ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByLinkText(String using) {
+        return Finder.findElementsByLinkText(document, using, ctx);
+    }
+
+    @Override
+    public WebElement findElementByPartialLinkText(String using) {
+        return Finder.findElementByPartialLinkText(document, using, ctx);
+    }
+
+    @Override
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        return Finder.findElementsByPartialLinkText(document, using, ctx);
+    }
+
+    
+    @Override
     public WebElement findElementByName(String using) {
-        return new DomNodeWebElement(Finder.findElementByName_impl(document, using), ctx);
+        return Finder.findElementByName(document, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByName(String using) {
-        return Finder.wrap(Finder.findElementsByName_impl(document, using), ctx);
+        return Finder.findElementsByName(document, using, ctx);
     }
 
     @Override
     public WebElement findElementByTagName(String using) {
-        return new DomNodeWebElement(Finder.findElementByTagName_impl(document, using), ctx);
+        return Finder.findElementByTagName(document, using, ctx);
     }
 
     @Override
     public List<WebElement> findElementsByTagName(String using) {
-        return Finder.wrap(Finder.findElementsByTagName_impl(document, using), ctx);
+        return Finder.findElementsByTagName(document, using, ctx);
     }
-
     void setContext(BrwsrCtx ctx) {
         try {
             this.ctx = ctx;

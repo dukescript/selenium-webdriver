@@ -34,6 +34,71 @@ import org.openqa.selenium.WebElement;
  */
 public class Finder {
 
+    public static WebElement findElementByCssSelector(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, using), ctx);
+    }
+
+    public static List<WebElement> findElementsByCssSelector(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, using), ctx);
+    }
+
+    public static WebElement findElementByClassName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByClassName_impl(nativeElement, using), ctx);
+    }
+
+    public static List<WebElement> findElementsByClassName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByClassName_impl(nativeElement, using), ctx);
+    }
+
+    public static WebElement findElementById(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByCSSSelector_impl(nativeElement, "#" + using), ctx);
+    }
+
+    public static List<WebElement> findElementsById(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByCSSSelector_impl(nativeElement, "#" + using), ctx);
+    }
+
+    public static WebElement findElementByXPath(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, using), ctx);
+    }
+
+    public static List<WebElement> findElementsByXPath(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, using), ctx);
+    }
+
+    public static WebElement findElementByLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[text()='" + using + "']"), ctx);
+    }
+
+    public static List<WebElement> findElementsByLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[text()='" + using + "']"),ctx);
+    }
+
+    public static WebElement findElementByPartialLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"), ctx);
+    }
+
+    public static List<WebElement> findElementsByPartialLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"),ctx);
+    }
+
+    public static WebElement findElementByName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByName_impl(nativeElement, using), ctx);
+    }
+
+    public static List<WebElement> findElementsByName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByName_impl(nativeElement, using), ctx);
+    }
+
+    public static WebElement findElementByTagName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return new DomNodeWebElement(Finder.findElementByTagName_impl(nativeElement, using), ctx);
+    }
+
+    public static List<WebElement> findElementsByTagName(Object nativeElement, String using, BrwsrCtx ctx) {
+        return Finder.wrap(Finder.findElementsByTagName_impl(nativeElement, using), ctx);
+    }
+    
+    
     static List<WebElement> wrap(Object[] findElementsByXPath_impl, BrwsrCtx ctx) {
         ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
@@ -41,7 +106,7 @@ public class Finder {
         }
         return arrayList;
     }
-
+    
     @JavaScriptBody(args = {"element", "using"}, body = "console.log('selector '+using);"
             + "return element.querySelector(using);\n")
     static native Object findElementByCSSSelector_impl(Object element, String using);
