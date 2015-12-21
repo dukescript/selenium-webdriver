@@ -68,6 +68,20 @@ public class Finder {
             + "return arr;")
     static native Object[] findElementsByName_impl(Object element, String using);
 
+    @JavaScriptBody(args = {"element", "using"}, body =
+           "var nodeList = element.getElementsByTagName(using);\n"
+            + "return nodeList[0];")
+    static native Object findElementByTagName_impl(Object element, String using);
+
+    @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.getElementsByTagName(using);\n"
+            + "var arr = [];\n"
+            + "for (var i = 0; i < nodeList.length; i++) {\n"
+            + "    console.log('node '+nodeList[i]);\n"
+            + "    arr.push(nodeList[i]);\n"
+            + "};"
+            + "return arr;")
+    static native Object[] findElementsByTagName_impl(Object element, String using);
+
     @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.getElementsByClassName(using);\n"
             + "return nodeList[0];")
     static native Object findElementByClassName_impl(Object element, String using);

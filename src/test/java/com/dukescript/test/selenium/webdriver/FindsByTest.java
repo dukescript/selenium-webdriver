@@ -283,6 +283,32 @@ public class FindsByTest {
         Assert.assertEquals(1, found.size());     
     }
 
+    @Test
+    public void findElementByTagName() {
+        WebElement element = driver.findElement(By.tagName("input"));
+        Assert.assertEquals("INPUT", element.getTagName());
+    }
+
+    @Test
+    public void Element_findElementByTagName() {
+        WebElement parent = driver.findElement(By.id("form"));
+        WebElement element = parent.findElement(By.tagName("input"));
+        Assert.assertEquals("INPUT", element.getTagName());
+    }
+
+    @Test
+    public void findElementsByTagName() {
+        List<WebElement> found = driver.findElements(By.tagName("input"));
+        Assert.assertEquals(2, found.size());
+    }
+
+    @Test
+    public void Element_findElementsByTagName() {
+        WebElement parent = driver.findElement(By.id("form"));
+        List<WebElement> found = parent.findElements(By.tagName("input"));
+        Assert.assertEquals(2, found.size());     
+    }
+
     @AfterClass
     public static void close() {
         driver.close();

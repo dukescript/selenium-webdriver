@@ -23,7 +23,6 @@ package com.dukescript.test.selenium.webdriver;
  * #L%
  */
 import java.awt.AWTException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -245,12 +244,12 @@ final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath,
 
     @Override
     public WebElement findElementByTagName(String using) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DomNodeWebElement(Finder.findElementByTagName_impl(document, using), ctx);
     }
 
     @Override
     public List<WebElement> findElementsByTagName(String using) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Finder.wrap(Finder.findElementsByTagName_impl(document, using), ctx);
     }
 
     @Override
