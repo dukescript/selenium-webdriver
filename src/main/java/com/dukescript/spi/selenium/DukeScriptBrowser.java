@@ -81,7 +81,6 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
     public void start(double width, double height) {
         this.stage = new Stage();
         WebEngine engine = view.getEngine();
-        ConsoleLogger.register(engine);
         engine.titleProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -256,6 +255,10 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
         } catch (InterruptedException ex) {
             Logger.getLogger(DukeScriptBrowser.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void registerLogger() {
+        ConsoleLogger.register(view.getEngine());
     }
 
 }

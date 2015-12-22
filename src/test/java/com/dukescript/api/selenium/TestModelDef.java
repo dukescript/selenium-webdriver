@@ -36,7 +36,6 @@ public class TestModelDef {
     
     @Function
     public static void commit(TestModel model){
-        System.out.println("commit called "+model.getInput());
         model.setText(model.getInput());
     }
 }

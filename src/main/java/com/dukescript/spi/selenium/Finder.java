@@ -71,7 +71,7 @@ final class Finder {
     }
 
     public static List<WebElement> findElementsByLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[text()='" + using + "']"),ctx);
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[text()='" + using + "']"), ctx);
     }
 
     public static WebElement findElementByPartialLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
@@ -79,7 +79,7 @@ final class Finder {
     }
 
     public static List<WebElement> findElementsByPartialLinkText(Object nativeElement, String using, BrwsrCtx ctx) {
-        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"),ctx);
+        return Finder.wrap(Finder.findElementsByXPath_impl(nativeElement, "//a[contains(text(), '" + using + "')]"), ctx);
     }
 
     public static WebElement findElementByName(Object nativeElement, String using, BrwsrCtx ctx) {
@@ -97,8 +97,7 @@ final class Finder {
     public static List<WebElement> findElementsByTagName(Object nativeElement, String using, BrwsrCtx ctx) {
         return Finder.wrap(Finder.findElementsByTagName_impl(nativeElement, using), ctx);
     }
-    
-    
+
     static List<WebElement> wrap(Object[] findElementsByXPath_impl, BrwsrCtx ctx) {
         ArrayList<WebElement> arrayList = new ArrayList<>();
         for (Object object : findElementsByXPath_impl) {
@@ -106,7 +105,7 @@ final class Finder {
         }
         return arrayList;
     }
-    
+
     @JavaScriptBody(args = {"element", "using"}, body = "console.log('selector '+using);"
             + "return element.querySelector(using);\n")
     static native Object findElementByCSSSelector_impl(Object element, String using);
@@ -121,7 +120,8 @@ final class Finder {
     static native Object[] findElementsByCSSSelector_impl(Object element, String using);
 
     @JavaScriptBody(args = {"element", "using"}, body
-            =  "return element.querySelector('*[name='+using+']');\n")
+            = "console.log('find by name '+using);\n"
+            + "return element.querySelector('*[name='+using+']');\n")
     static native Object findElementByName_impl(Object element, String using);
 
     @JavaScriptBody(args = {"element", "using"}, body = "var nodeList = element.querySelectorAll('*[name='+using+']');\n"
@@ -133,8 +133,8 @@ final class Finder {
             + "return arr;")
     static native Object[] findElementsByName_impl(Object element, String using);
 
-    @JavaScriptBody(args = {"element", "using"}, body =
-           "var nodeList = element.getElementsByTagName(using);\n"
+    @JavaScriptBody(args = {"element", "using"}, body
+            = "var nodeList = element.getElementsByTagName(using);\n"
             + "return nodeList[0];")
     static native Object findElementByTagName_impl(Object element, String using);
 

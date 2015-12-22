@@ -110,6 +110,7 @@ public final class WebDriverFX implements WebDriver, Executor {
             @Override
             public void run() {
                 ctx = BrwsrCtx.findDefault(WebDriverFX.class);
+                dsBrowser.registerLogger();
                 init.countDown();
             }
         };

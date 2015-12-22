@@ -1,4 +1,5 @@
 package com.dukescript.spi.selenium;
+
 /*
  * #%L
  * DukeScriptScriptBrowser - a file from the "selenium webdriver" project.
@@ -21,36 +22,35 @@ package com.dukescript.spi.selenium;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
+import net.java.html.js.JavaScriptBody;
 
-public final class ConsoleLogger {
+ final class ConsoleLogger {
+
     static final Logger LOGGER = Logger.getLogger(ConsoleLogger.class.getName());
-    
+
     private ConsoleLogger() {
     }
 
     static void register(WebEngine eng) {
-        JSObject fn = (JSObject) eng.executeScript(""
-            + "(function(attr, l, c) {"
-            + "  window.console[attr] = function(msg) { c.log(l, msg); };"
-            + "})"
-        );
         ConsoleLogger c = new ConsoleLogger();
-        c.register_impl(fn, "log", Level.INFO);
-        c.register_impl(fn, "info", Level.INFO);
-        c.register_impl(fn, "warn", Level.WARNING);
-        c.register_impl(fn, "error", Level.SEVERE);
+        register_impl("log", Level.INFO, c);
+        register_impl("info", Level.INFO, c);
+        register_impl("warn", Level.WARNING, c);
+        register_impl("error", Level.SEVERE, c);
     }
-    
-    private void register_impl(JSObject eng, String attr, Level l) {
-        eng.call("call", null, attr, l, this);
-    }
-    
+
+    @JavaScriptBody(args = {"attr", "l", "c"}, body = ""
+            + "window.console[attr] = function(msg) {"
+            + "     c.@com.dukescript.spi.selenium.ConsoleLogger::log(Ljava/util/logging/Level;Ljava/lang/String;)(l, msg);"
+            + "  };"
+          , javacall = true)
+    private native static void register_impl(String attr, Level l, ConsoleLogger c);
+
     public void log(Level l, String msg) {
         LOGGER.log(l, msg);
     }
+
 }
