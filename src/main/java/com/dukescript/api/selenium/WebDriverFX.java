@@ -48,21 +48,18 @@ import org.openqa.selenium.WebElement;
  * like this:
  *
  * <pre>
- * {@code
  * private static WebDriverFX driver;
  * private static TestModel testModel;
- *
- * @BeforeClass
+ * {@literal @}BeforeClass
  * public static void test() throws InterruptedException, Exception {
  *   driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"));
  *   driver.executeAndWait(new Runnable() {
- *     @Override
+ *     {@literal @}Override
  *     public void run() {
  *       testModel = new TestModel("Hello", "World");
  *       testModel.applyBindings();
  *     }
  *   });
- * }
  * }
  * </pre>
  *
@@ -80,7 +77,7 @@ public final class WebDriverFX implements WebDriver, Executor {
      * Otherwise use {@link #WebDriverFX(URL, double, double)}
      * 
      * @param view an existing webview
-     * @throws Exception 
+     * @throws Exception Might throw InterruptedException or AWTException (uses Robot)
      */
     public WebDriverFX(WebView view) throws Exception {
 
@@ -102,7 +99,7 @@ public final class WebDriverFX implements WebDriver, Executor {
      * @param url The URL of the page to be loaded
      * @param width width of the {@link javafx.stage.Stage}
      * @param height height of the {@link javafx.stage.Stage}
-     * @throws Exception
+     * @throws Exception Might throw InterruptedException or AWTException (uses Robot)
      */
     public WebDriverFX(final URL url, final double width, final double height) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
@@ -214,8 +211,8 @@ public final class WebDriverFX implements WebDriver, Executor {
     /**
      * Executes a Runnable in BrwsrCtx and waits for it to finish.
      *
-     * @param command
-     * @throws InterruptedException
+     * @param command The command to execute
+     * @throws InterruptedException (uses CountDownLatch)
      */
     public void executeAndWait(final Runnable command) throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);

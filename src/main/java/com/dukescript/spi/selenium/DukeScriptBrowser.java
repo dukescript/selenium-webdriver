@@ -49,7 +49,8 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 /**
- *
+ * Implementation class, not of general interest.
+ * 
  * @author antonepple
  */
 public final class DukeScriptBrowser implements SearchContext, FindsById, FindsByXPath, FindsByCssSelector, FindsByLinkText, FindsByClassName,
@@ -71,13 +72,18 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
     /**
      * Manages existing WebView
      *
-     * @param view
-     * @throws AWTException
+     * @param view The view
+     * @throws AWTException (uses Robot)
      */
     public DukeScriptBrowser(WebView view) throws AWTException {
         this.view = view;
     }
 
+    /**
+     * 
+     * @param width width of Stage
+     * @param height height of Stage
+     */
     public void start(double width, double height) {
         this.stage = new Stage();
         WebEngine engine = view.getEngine();
@@ -94,10 +100,18 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
         stage.show();
     }
 
+    /**
+     * 
+     * @return the WebView of this Browser
+     */
     public WebView getView() {
         return view;
     }
 
+    /**
+     * 
+     * @return The Page Source
+     */
     public String getPageSource() {
         return view.getEngine().getLocation();
     }
@@ -150,12 +164,19 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
         return null;
     }
 
+    /**
+     * Close the stage
+     */
     public void close() {
         if (stage != null) {
             stage.close();
         }
     }
 
+    /**
+     * 
+     * @return title
+     */
     public String getTitle() {
         return view.getEngine().getTitle();
     }
@@ -257,6 +278,9 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
         }
     }
 
+    /**
+     * enable logging via JS console.log(...)
+     */
     public void registerLogger() {
         ConsoleLogger.register(view.getEngine());
     }
