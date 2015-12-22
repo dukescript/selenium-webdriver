@@ -3,8 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dukescript.api</groupId>
     <artifactId>dukescript-selenium</artifactId>
+    <name>DukeScript Selenium Webdriver</name>
+
     <version>0.5-SNAPSHOT</version>
     <packaging>bundle</packaging>
+    <url>https://github.com/dukescript/selenium-webdriver</url>
+    <description>A library for Integration Testing DukeScript applications with Selenium</description>
     <developers>
         <developer>
             <id>monacotoni</id>
