@@ -107,7 +107,7 @@ public final class DukeScriptBrowser implements SearchContext, FindsById, FindsB
     public List<WebElement> findElements(final By by) {
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-            WebDriverFX.RunVal<List<WebElement>> runVal = new WebDriverFX.RunVal<List<WebElement>>() {
+            RunVal<List<WebElement>> runVal = new RunVal<List<WebElement>>() {
                 List<WebElement> result;
 
                 @Override

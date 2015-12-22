@@ -251,9 +251,10 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public List<WebElement> findElements(final By by) {
+        
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-            WebDriverFX.RunVal<List<WebElement>> runVal = new WebDriverFX.RunVal<List<WebElement>>() {
+            RunVal<List<WebElement>> runVal = new RunVal<List<WebElement>>() {
                 List<WebElement> result;
 
                 @Override
@@ -379,7 +380,7 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @JavaScriptBody(args = {"element", "name"}, body = "return window.getComputedStyle(element).getPropertyValue(name);")

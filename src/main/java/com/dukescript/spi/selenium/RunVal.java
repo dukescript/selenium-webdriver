@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<!--
 /*
  * #%L
- * index.html - a file from the "selenium webdriver" project.
+ * RunVal - a file from the "selenium webdriver" project.
  * Visit http://dukescript.com for support and commercial license.
  * %%
  * Copyright (C) 2015 Dukehoff GmbH
@@ -22,27 +20,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-        <form id="form" >
-            <input type="text" id="input" >
-            <input  type="button" id="button" value="Click" onClick="formSubmit()">
-        </form >
-        <span id="target"></span>
-        <span id="log"></span>
-        <script>
-            function formSubmit() {
-                var text = document.getElementById("input").value;
-                document.getElementById("target").textContent = text;
-            }
+package com.dukescript.spi.selenium;
 
-        </script>
-    </body>
-</html>
+
+
+interface RunVal<T> extends Runnable {
+
+    public T get();
+}

@@ -75,6 +75,13 @@ public final class WebDriverFX implements WebDriver, Executor {
     private DukeScriptBrowser dsBrowser;
     private BrwsrCtx ctx;
 
+    /**
+     * Use this constructor only if you need to initialize your webview.
+     * Otherwise use {@link #WebDriverFX(URL, double, double)}
+     * 
+     * @param view an existing webview
+     * @throws Exception 
+     */
     public WebDriverFX(WebView view) throws Exception {
 
         FXBrowsers.runInBrowser(view, new Runnable() {
@@ -90,8 +97,11 @@ public final class WebDriverFX implements WebDriver, Executor {
     }
 
     /**
-     *
-     * @param url The URL of the pafe to be loaded
+     * Constructor that allows you to set a size for the browser window. 
+     * 
+     * @param url The URL of the page to be loaded
+     * @param width width of the {@link javafx.stage.Stage}
+     * @param height height of the {@link javafx.stage.Stage}
      * @throws Exception
      */
     public WebDriverFX(final URL url, final double width, final double height) throws Exception {
@@ -117,7 +127,13 @@ public final class WebDriverFX implements WebDriver, Executor {
         init.await();
         dsBrowser.setContext(ctx);
     }
-
+    
+    /**
+     * Opens URL in a 800 * 600 Stage.  
+     * 
+     * @param url The URL of the page to be loaded
+     * @throws Exception
+     */
     public WebDriverFX(final URL url) throws Exception {
         this(url, 800, 600);
     }
@@ -215,9 +231,5 @@ public final class WebDriverFX implements WebDriver, Executor {
     @Override
     public void execute(Runnable command) {
         ctx.execute(command);
-    }
-
-    public static interface RunVal<T> extends Runnable {
-        public T get();
     }
 }

@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.dukescript.test</groupId>
-    <artifactId>selenium-webdriver</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <groupId>com.dukescript.api</groupId>
+    <artifactId>dukescript-selenium</artifactId>
+    <version>0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <developers>
+        <developer>
+            <id>monacotoni</id>
+            <name>Anton Epple</name>
+            <email>toni.epple@dukescript.com</email>
+            <organization>Dukehoff GmbH</organization>
+            <organizationUrl>http://www.dukescript.com</organizationUrl>
+            <roles>
+                <role>Project-Administrator</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    
+    <licenses>
+        <license>
+            <name>gpl_v3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+            <comments>
+                Visit http://dukescript.com for support and commercial license.
+            </comments>
+        </license>
+    </licenses>
+    
+    <scm>
+        <connection>scm:git:https://github.com/dukescript/selenium-webdriver.git</connection>
+        <url>https://github.com/dukescript/selenium-webdriver.git</url>
+        <developerConnection>scm:git:https://github.com/dukescript/selenium-webdriver.git</developerConnection>
+        <tag>release-${releaseVersion}</tag>
+    </scm>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -37,15 +69,6 @@
             </plugin>
         </plugins>
     </build>
-    <licenses>
-        <license>
-            <name>gpl_v3</name>
-            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
-            <comments>
-                Visit http://dukescript.com for support and commercial license.
-            </comments>
-        </license>
-    </licenses>
     <profiles>
         <profile>
             <id>release</id>
@@ -77,6 +100,17 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>maven-bundle-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <instructions>
+                                <Eclipse-BuddyPolicy>dependent</Eclipse-BuddyPolicy>
+                            </instructions>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
