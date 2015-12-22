@@ -22,7 +22,7 @@ package com.dukescript.api.selenium;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-import com.dukescript.spi.selenium.DukeScriptBrowser;
+import com.dukescript.impl.selenium.DukeScriptBrowser;
 import java.awt.AWTException;
 import java.net.URL;
 import java.util.List;

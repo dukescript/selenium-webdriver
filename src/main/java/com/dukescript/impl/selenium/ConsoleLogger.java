@@ -1,4 +1,4 @@
-package com.dukescript.spi.selenium;
+package com.dukescript.impl.selenium;
 
 /*
  * #%L
@@ -44,7 +44,7 @@ import net.java.html.js.JavaScriptBody;
 
     @JavaScriptBody(args = {"attr", "l", "c"}, body = ""
             + "window.console[attr] = function(msg) {"
-            + "     c.@com.dukescript.spi.selenium.ConsoleLogger::log(Ljava/util/logging/Level;Ljava/lang/String;)(l, msg);"
+            + "     c.@com.dukescript.impl.selenium.ConsoleLogger::log(Ljava/util/logging/Level;Ljava/lang/String;)(l, msg);"
             + "};"
           , javacall = true)
     private native static void register_impl(String attr, Level l, ConsoleLogger c);

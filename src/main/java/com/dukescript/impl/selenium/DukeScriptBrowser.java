@@ -1,4 +1,4 @@
-package com.dukescript.spi.selenium;
+package com.dukescript.impl.selenium;
 
 /*
  * #%L
