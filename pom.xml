@@ -4,7 +4,7 @@
     <groupId>com.dukescript.api</groupId>
     <artifactId>dukescript-selenium</artifactId>
     <version>0.5-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <developers>
         <developer>
             <id>monacotoni</id>
