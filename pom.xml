@@ -76,6 +76,9 @@
                 <version>2.10.3</version>
                 <configuration>
                     <excludePackageNames>com.dukescript.spi.**</excludePackageNames>
+                    <links>
+                        <link>https://selenium.googlecode.com/git/docs/api/java/</link>
+                    </links>
                 </configuration>
             </plugin>
             <plugin>
