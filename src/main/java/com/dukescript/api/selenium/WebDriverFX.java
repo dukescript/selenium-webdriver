@@ -44,8 +44,9 @@ import org.openqa.selenium.WebElement;
  * A WebDriver you can use to test DukeScriptApplications.
  *
  * The WebDriver takes care of Threading and BrwsrCtx. It has some additional
- * methods helpful for initializing a DukeScript Model. You can load a model
- * like this:
+ * methods helpful for initializing a DukeScript Model. You can load a model in
+ * {@literal @}BeforeClass and use it for example like this:
+ *
  *
  * <pre>
  * private static WebDriverFX driver;
@@ -61,6 +62,24 @@ import org.openqa.selenium.WebElement;
  *     }
  *   });
  * }
+ * {@literal @}Test
+ * public void withModel() {
+ *   // please note that this method is not executed in BrwsrCtx
+ *   // to allow seeing updates in the Browser while debugging a test
+ *   WebElement element = driver.findElement(By.id("target"));
+ *   Assert.assertEquals("Hello", element.getText());
+ *   WebElement button = driver.findElement(By.id("button"));
+ *   button.click();
+ *   Assert.assertEquals("World", element.getText());
+ *   WebElement input = driver.findElement(By.id("input"));
+ *   input.clear();
+ *   input.sendKeys("DukeScript");
+ *   button.click();
+ *   Assert.assertEquals("DukeScript", element.getText());
+ *   WebElement findElement = driver.findElement(By.cssSelector(".bla"));
+ *   Assert.assertNotNull(findElement);
+ *   Assert.assertEquals("DukeScript", findElement.getText());
+ * }
  * </pre>
  *
  *
@@ -75,9 +94,10 @@ public final class WebDriverFX implements WebDriver, Executor {
     /**
      * Use this constructor only if you need to initialize your webview.
      * Otherwise use {@link #WebDriverFX(URL, double, double)}
-     * 
+     *
      * @param view an existing webview
-     * @throws Exception Might throw InterruptedException or AWTException (uses Robot)
+     * @throws Exception Might throw InterruptedException or AWTException (uses
+     * Robot)
      */
     public WebDriverFX(WebView view) throws Exception {
 
@@ -94,12 +114,13 @@ public final class WebDriverFX implements WebDriver, Executor {
     }
 
     /**
-     * Constructor that allows you to set a size for the browser window. 
-     * 
+     * Constructor that allows you to set a size for the browser window.
+     *
      * @param url The URL of the page to be loaded
      * @param width width of the {@link javafx.stage.Stage}
      * @param height height of the {@link javafx.stage.Stage}
-     * @throws Exception Might throw InterruptedException or AWTException (uses Robot)
+     * @throws Exception Might throw InterruptedException or AWTException (uses
+     * Robot)
      */
     public WebDriverFX(final URL url, final double width, final double height) throws Exception {
         JFXPanel jfxPanel = new JFXPanel(); // initializes toolkit
@@ -125,10 +146,10 @@ public final class WebDriverFX implements WebDriver, Executor {
         init.await();
         dsBrowser.setContext(ctx);
     }
-    
+
     /**
-     * Opens URL in a 800 * 600 Stage.  
-     * 
+     * Opens URL in a 800 * 600 Stage.
+     *
      * @param url The URL of the page to be loaded
      * @throws Exception
      */

@@ -64,8 +64,6 @@ public class FindsByTest {
         WebElement findElement = driver.findElement(By.cssSelector(".bla"));
         Assert.assertNotNull(findElement);
         Assert.assertEquals("DukeScript", findElement.getText());
-        List<WebElement> findElements = driver.findElements(By.cssSelector(".bla"));
-//        Assert.assertEquals(1, findElements.size());
     }
 
     @Test
