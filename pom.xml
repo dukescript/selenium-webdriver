@@ -202,5 +202,11 @@
             <version>RELEASE81</version>
             <type>jar</type>
         </dependency>
-    </dependencies>       
+    </dependencies>    
+       <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>   
 </project>
