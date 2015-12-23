@@ -44,21 +44,22 @@ public class ElementTests {
         driver.executeAndWait(new Runnable() {
             @Override
             public void run() {
-                testModel = new TestModel("Hello", "World");
+                testModel = new TestModel("Hello", "");
                 testModel.applyBindings();
             }
         });
     }
 
+
     @Test
-    public void withModel() throws InterruptedException {
-        WebElement element = driver.findElement(By.id("input"));
-        element.clear();
-        String value = element.getAttribute("value");
-        element.sendKeys("Hallo");
-        Thread.sleep(5000);
-        value = element.getAttribute("value");
-        Assert.assertEquals(value, "Hallo");
+    public void enabledTest() throws InterruptedException {
+        WebElement input = driver.findElement(By.id("input"));
+        WebElement button = driver.findElement(By.id("button"));
+        Assert.assertEquals(false, button.isEnabled());
+        String value = input.getAttribute("value");
+        input.sendKeys("Hallo");
+        Thread.sleep(500);
+        Assert.assertEquals (true, button.isEnabled());
     }
 
     @AfterClass

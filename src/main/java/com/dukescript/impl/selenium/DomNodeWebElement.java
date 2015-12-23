@@ -401,7 +401,7 @@ final class DomNodeWebElement implements WebElement, Serializable, FindsByCssSel
     @JavaScriptBody(args = {"element"}, body = "var top = element.offsetTop;\n" + "  var left = element.offsetLeft;\n" + "  var width = element.offsetWidth;\n" + "  var height = element.offsetHeight;\n" + "\n" + "  while(element.offsetParent) {\n" + "    el = element.offsetParent;\n" + "    top += element.offsetTop;\n" + "    left += element.offsetLeft;\n" + "  }\n" + "\n" + "  return (\n" + "    top < (window.pageYOffset + window.innerHeight) &&\n" + "    left < (window.pageXOffset + window.innerWidth) &&\n" + "    (top + height) > window.pageYOffset &&\n" + "    (left + width) > window.pageXOffset\n" + "  );")
     static native boolean isDisplayed_impl(Object element);
 
-    @JavaScriptBody(args = {"element"}, body = "return element.disabled;")
+    @JavaScriptBody(args = {"element"}, body = "return !element.disabled;")
     static native boolean isEnabled_impl(Object element);
 
     @JavaScriptBody(args = {"element"}, body = "return element.selected || element.checked;")

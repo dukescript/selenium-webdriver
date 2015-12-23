@@ -24,6 +24,7 @@ package com.dukescript.api.selenium;
  */
 
 
+import net.java.html.json.ComputedProperty;
 import net.java.html.json.Function;
 import net.java.html.json.Model;
 import net.java.html.json.Property;
@@ -37,5 +38,10 @@ public class TestModelDef {
     @Function
     public static void commit(TestModel model){
         model.setText(model.getInput());
+    }
+    
+    @ComputedProperty
+    public static boolean enabled(String input){
+        return input!=null && input.length()>0;
     }
 }

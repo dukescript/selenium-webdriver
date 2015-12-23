@@ -33,7 +33,7 @@
         <div data-bind="text: text">TODO write content</div>
         <form id="form" >
             <input name="text" id="input" data-bind="textInput: input" >
-            <input  type="button" id="button" value="Click" data-bind="click: commit">
+            <input  type="button" id="button" value="Click" data-bind="enable: enabled, click: commit">
         </form >
         <span id="target" class="bla" data-bind="text: text"></span>
         <p id="links"><a href="sd">Text of link</a>
