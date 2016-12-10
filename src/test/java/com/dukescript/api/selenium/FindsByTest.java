@@ -22,6 +22,7 @@ package com.dukescript.api.selenium;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+import java.net.URL;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -31,13 +32,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class FindsByTest {
-
+    // BEGIN: com.dukescript.api.selenium.FindsByTest
     private static WebDriverFX driver;
     private static TestModel testModel;
 
     @BeforeClass
     public static void test() throws InterruptedException, Exception {
-        driver = new WebDriverFX(FindsByTest.class.getResource("testWithModel.html"));
+        final URL url = FindsByTest.class.getResource("testWithModel.html");
+        driver = new WebDriverFX(url);
         driver.executeAndWait(new Runnable() {
             @Override
             public void run() {
@@ -65,6 +67,7 @@ public class FindsByTest {
         Assert.assertNotNull(findElement);
         Assert.assertEquals("DukeScript", findElement.getText());
     }
+    // END: com.dukescript.api.selenium.FindsByTest
 
     @Test
     public void Element_tagName() {

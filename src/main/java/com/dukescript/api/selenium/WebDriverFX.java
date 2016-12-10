@@ -46,42 +46,8 @@ import org.openqa.selenium.WebElement;
  * The WebDriver takes care of Threading and BrwsrCtx. It has some additional
  * methods helpful for initializing a DukeScript Model. You can load a model in
  * {@literal @}BeforeClass and use it for example like this:
- *
- *
- * <pre>
- * private static WebDriverFX driver;
- * private static TestModel testModel;
- * {@literal @}BeforeClass
- * public static void test() throws InterruptedException, Exception {
- *   driver = new WebDriverFX(SimpleTest.class.getResource("testWithModel.html"));
- *   driver.executeAndWait(new Runnable() {
- *     {@literal @}Override
- *     public void run() {
- *       testModel = new TestModel("Hello", "World");
- *       testModel.applyBindings();
- *     }
- *   });
- * }
- * {@literal @}Test
- * public void withModel() {
- *   // please note that this method is not executed in BrwsrCtx
- *   // to allow seeing updates in the Browser while debugging a test
- *   WebElement element = driver.findElement(By.id("target"));
- *   Assert.assertEquals("Hello", element.getText());
- *   WebElement button = driver.findElement(By.id("button"));
- *   button.click();
- *   Assert.assertEquals("World", element.getText());
- *   WebElement input = driver.findElement(By.id("input"));
- *   input.clear();
- *   input.sendKeys("DukeScript");
- *   button.click();
- *   Assert.assertEquals("DukeScript", element.getText());
- *   WebElement findElement = driver.findElement(By.cssSelector(".bla"));
- *   Assert.assertNotNull(findElement);
- *   Assert.assertEquals("DukeScript", findElement.getText());
- * }
- * </pre>
- *
+ * <p></p>
+ * {@codesnippet com.dukescript.api.selenium.FindsByTest}
  *
  * @author antonepple
  */
